@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { agreementLink, resolveQuote } from "@/lib/agreement";
 import { DIRECT_EMAIL } from "@/lib/contact";
+import { esc, link, monoAccent, renderEmail, type EmailBlock } from "@/lib/email";
 import {
   computeTotal,
   findAddOn,
@@ -168,6 +169,87 @@ function notificationText(data: Submission): string {
   return parts.join("\n");
 }
 
+/**
+ * The text breakdown, escaped and accent-marked for a mono HTML block —
+ * derived from the same quoteBreakdown() as the plain-text version, so the
+ * two renderings can never disagree.
+ */
+function quoteBreakdownHtmlLines(data: Submission): string[] {
+  return quoteBreakdown(data)
+    .split("\n")
+    .map((line) =>
+      line.startsWith(">") || line.startsWith("TOTAL")
+        ? monoAccent(esc(line))
+        : esc(line)
+    );
+}
+
+function notificationHtml(data: Submission): string {
+  const blocks: EmailBlock[] = [
+    {
+      kind: "rows",
+      rows: [
+        ["NAME", esc(data.name)],
+        ["EMAIL", link(`mailto:${esc(data.email)}`, esc(data.email))],
+        ...(data.company ? [["COMPANY", esc(data.company)] as [string, string]] : []),
+        ...(data.role ? [["ROLE", esc(data.role)] as [string, string]] : []),
+        ...(data.projectType ? [["TYPE", esc(data.projectType)] as [string, string]] : []),
+        ...(data.budget ? [["BUDGET", esc(data.budget)] as [string, string]] : []),
+      ],
+    },
+  ];
+
+  if (isQuote(data)) {
+    blocks.push({ kind: "mono", lines: quoteBreakdownHtmlLines(data) });
+    const quote = resolveQuote(data.packageType, data.addOns);
+    if (quote) {
+      const url = agreementLink(quote);
+      blocks.push(
+        {
+          kind: "p",
+          html: `Forward this signing link to the client when you're ready — signing it invoices the ${esc(formatUsd(quote.deposit))} deposit:`,
+        },
+        { kind: "button", label: "Open signing link", url },
+        { kind: "p", html: link(url) }
+      );
+    }
+  }
+
+  blocks.push(
+    { kind: "divider" },
+    { kind: "p", html: esc(data.message).replace(/\n/g, "<br>") }
+  );
+
+  const eyebrow = isEmployment(data)
+    ? "hiring inquiry"
+    : isQuote(data)
+      ? "quote request"
+      : "new inquiry";
+  return renderEmail({ eyebrow, blocks });
+}
+
+function autoReplyHtml(data: Submission): string {
+  const blocks: EmailBlock[] = [
+    { kind: "p", html: `Hi ${esc(data.name)},` },
+    {
+      kind: "p",
+      html: "Thanks for reaching out — I got your message and I'll reply within 24 hours.",
+    },
+  ];
+  if (isQuote(data)) {
+    blocks.push(
+      { kind: "p", html: "Here's the estimate you built, for your records:" },
+      { kind: "mono", lines: quoteBreakdownHtmlLines(data) },
+      {
+        kind: "p",
+        html: "This is a starting point, not a binding quote — I'll confirm scope and price once I understand the project.",
+      }
+    );
+  }
+  blocks.push({ kind: "p", html: "— Matthew" });
+  return renderEmail({ eyebrow: "message received", blocks });
+}
+
 function autoReplyText(data: Submission): string {
   const parts = [
     `Hi ${data.name},`,
@@ -240,6 +322,7 @@ export async function POST(request: Request) {
     replyTo: data.email,
     subject,
     text: notificationText(data),
+    html: notificationHtml(data),
   });
 
   if (error) {
@@ -260,6 +343,7 @@ export async function POST(request: Request) {
       to: data.email,
       subject: "Got your message — MVella Studios",
       text: autoReplyText(data),
+      html: autoReplyHtml(data),
     });
     if (replyError) {
       console.error("contact auto-reply failed:", JSON.stringify(replyError));

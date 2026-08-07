@@ -11,6 +11,7 @@ import {
   type Quote,
 } from "@/lib/agreement";
 import { DIRECT_EMAIL } from "@/lib/contact";
+import { esc, link, renderEmail, type EmailBlock } from "@/lib/email";
 import { findAddOn, findPackage, formatUsd } from "@/lib/packages";
 
 /**
@@ -293,6 +294,50 @@ export async function POST(request: Request) {
               ]
             : []),
         ].join("\n"),
+        html: renderEmail({
+          eyebrow: "agreement recorded",
+          blocks: [
+            {
+              kind: "rows",
+              rows: [
+                ["NAME", esc(data.fullName)],
+                ...(data.company
+                  ? [["COMPANY", esc(data.company)] as [string, string]]
+                  : []),
+                ["EMAIL", link(`mailto:${esc(data.email)}`, esc(data.email))],
+                ["VERSION", esc(data.agreementVersion)],
+                ["SIGNED", esc(row.agreed_at)],
+                ["RECORD", esc(row.id)],
+                ...(quote
+                  ? [
+                      [
+                        "QUOTED",
+                        `${esc(formatUsd(quote.total))} (${esc(
+                          findPackage(quote.packageSlug)?.name ??
+                            quote.packageSlug
+                        )}${quote.addOnSlugs.length ? " + add-ons" : ""})`,
+                      ] as [string, string],
+                      [
+                        "DEPOSIT",
+                        `${esc(formatUsd(quote.deposit))} (${DEPOSIT_PERCENT}%)`,
+                      ] as [string, string],
+                      [
+                        "INVOICE",
+                        invoice
+                          ? esc(invoice.invoiceId)
+                          : `NOT CREATED — ${stripeKey ? "Stripe error, see logs" : "STRIPE_SECRET_KEY missing"}; invoice manually`,
+                      ] as [string, string],
+                    ]
+                  : []),
+              ],
+            },
+            ...(invoice?.url
+              ? ([
+                  { kind: "button", label: "View invoice", url: invoice.url },
+                ] as EmailBlock[])
+              : []),
+          ],
+        }),
       });
       if (error) {
         console.error("agreement notification failed:", JSON.stringify(error));
@@ -335,6 +380,52 @@ export async function POST(request: Request) {
           "— Matthew",
           "MVella Studios · South Florida",
         ].join("\n"),
+        html: renderEmail({
+          eyebrow: "agreement signed",
+          blocks: [
+            { kind: "p", html: `Hi ${esc(data.fullName)},` },
+            {
+              kind: "p",
+              html: "This confirms you signed the MVella Studios Service Agreement.",
+            },
+            {
+              kind: "rows",
+              rows: [
+                ["SIGNED", esc(row.agreed_at)],
+                ["VERSION", esc(data.agreementVersion)],
+                ["RECORD", esc(row.id)],
+              ],
+            },
+            {
+              kind: "p",
+              html: `The full text you agreed to: ${link(`${SITE_URL}/agreement`)}`,
+            },
+            ...(quote && invoice?.url
+              ? ([
+                  {
+                    kind: "p",
+                    html: `Your ${esc(formatUsd(quote.deposit))} deposit invoice (${DEPOSIT_PERCENT}% of ${esc(formatUsd(quote.total))}) is ready — payable by card or ACH bank transfer:`,
+                  },
+                  {
+                    kind: "button",
+                    label: "Pay deposit invoice",
+                    url: invoice.url,
+                  },
+                ] as EmailBlock[])
+              : quote
+                ? ([
+                    {
+                      kind: "p",
+                      html: `A ${esc(formatUsd(quote.deposit))} deposit invoice (${DEPOSIT_PERCENT}% of ${esc(formatUsd(quote.total))}) will follow separately.`,
+                    },
+                  ] as EmailBlock[])
+                : []),
+            {
+              kind: "p",
+              html: "Keep this email for your records.<br><br>— Matthew",
+            },
+          ],
+        }),
       });
       if (error) {
         console.error("agreement confirmation failed:", JSON.stringify(error));
