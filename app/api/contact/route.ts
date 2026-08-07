@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { agreementLink, resolveQuote } from "@/lib/agreement";
-import { DIRECT_EMAIL } from "@/lib/contact";
+import { FROM_EMAIL as DEFAULT_FROM_EMAIL, NOTIFY_EMAIL } from "@/lib/contact";
 import { esc, link, monoAccent, renderEmail, type EmailBlock } from "@/lib/email";
 import {
   computeTotal,
@@ -25,19 +25,16 @@ import {
  * Without a key the route answers 503 and both forms fall back to showing
  * the direct email — a failed submission is never dressed up as a sent one.
  *
- * Notifications go to DIRECT_EMAIL (lib/contact.ts) unless overridden —
- * the same address the site displays everywhere, so the two can't drift.
+ * Notifications go to NOTIFY_EMAIL (matthew@mvella.com) unless overridden.
+ * The public site shows hello@mvella.com — both are on the same domain.
  */
-const TO_EMAIL = process.env.CONTACT_TO_EMAIL ?? DIRECT_EMAIL;
+const TO_EMAIL = process.env.CONTACT_TO_EMAIL ?? NOTIFY_EMAIL;
 
 /**
- * Resend's shared onboarding sender works without domain verification but
- * only delivers to the account owner's own address — enough for the
- * notification, and the auto-reply is best-effort until a real domain is
- * verified and set here.
+ * Sender must be a verified mvella.com address. CONTACT_FROM_EMAIL overrides
+ * the default when set in Vercel.
  */
-const FROM_EMAIL =
-  process.env.CONTACT_FROM_EMAIL ?? "MVella Studios <onboarding@resend.dev>";
+const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL ?? DEFAULT_FROM_EMAIL;
 
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(200),

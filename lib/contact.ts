@@ -1,12 +1,25 @@
 /**
- * The studio's contact address — single source of truth.
+ * Studio email addresses — single source of truth.
  *
- * Previously this string was hardcoded in six places (four form components,
- * the footer, and the /contact sidebar) and drifted out of sync with the
- * address the API routes actually notify. Everything imports from here now.
+ * All mail is on mvella.com. Role-based local parts keep the public site,
+ * legal pages, and internal notifications clear without requiring separate
+ * inboxes (aliases / catch-all can land them wherever you prefer).
  *
- * Note this is the FROM-address's opposite number: it's where mail is sent
- * TO. The Resend sender is configured separately via CONTACT_FROM_EMAIL and
- * must be a domain you own — a gmail.com address is rejected as a sender.
+ * CONTACT_TO_EMAIL / CONTACT_FROM_EMAIL env vars still override the API
+ * routes when set in Vercel.
  */
-export const DIRECT_EMAIL = "matthewvella.dev@gmail.com";
+
+/** Public-facing contact shown in the footer, contact page, and form fallbacks. */
+export const DIRECT_EMAIL = "hello@mvella.com";
+
+/** Privacy / Terms contact address. */
+export const LEGAL_EMAIL = "info@mvella.com";
+
+/** Where form + agreement notifications land (Matthew). */
+export const NOTIFY_EMAIL = "matthew@mvella.com";
+
+/**
+ * Default Resend sender. Must be a verified mvella.com address — Resend
+ * rejects gmail.com (and any other domain you don't own) as From.
+ */
+export const FROM_EMAIL = "MVella Studios <hello@mvella.com>";

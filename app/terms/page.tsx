@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import LegalDocument from "@/components/LegalDocument";
+import { LEGAL_EMAIL } from "@/lib/contact";
 
 /**
  * Transcribed from terms-of-use.md, all REPLACE markers resolved to what
@@ -104,9 +105,7 @@ export default function TermsPage() {
       <h2>Contact</h2>
       <p>
         <strong>
-          <a href="mailto:matthewvella.dev@gmail.com">
-            matthewvella.dev@gmail.com
-          </a>
+          <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>
         </strong>
       </p>
     </LegalDocument>

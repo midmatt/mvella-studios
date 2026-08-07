@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LegalDocument from "@/components/LegalDocument";
+import { LEGAL_EMAIL } from "@/lib/contact";
 
 /**
  * Transcribed from legal-privacy-policy.md, all REPLACE markers resolved to
@@ -114,10 +115,7 @@ export default function LegalPage() {
         You can request a copy of the information we hold about you, ask us to
         correct it, or ask us to delete it (subject to any records we&rsquo;re
         required to keep for legal or contractual reasons) by emailing{" "}
-        <a href="mailto:matthewvella.dev@gmail.com">
-          matthewvella.dev@gmail.com
-        </a>
-        .
+        <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>.
       </p>
 
       <h2>Changes to This Policy</h2>
@@ -130,9 +128,7 @@ export default function LegalPage() {
       <p>
         Questions about this policy:{" "}
         <strong>
-          <a href="mailto:matthewvella.dev@gmail.com">
-            matthewvella.dev@gmail.com
-          </a>
+          <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>
         </strong>
       </p>
     </LegalDocument>

@@ -10,7 +10,7 @@ import {
   SITE_URL,
   type Quote,
 } from "@/lib/agreement";
-import { DIRECT_EMAIL } from "@/lib/contact";
+import { FROM_EMAIL as DEFAULT_FROM_EMAIL, NOTIFY_EMAIL } from "@/lib/contact";
 import { esc, link, renderEmail, type EmailBlock } from "@/lib/email";
 import { findAddOn, findPackage, formatUsd } from "@/lib/packages";
 
@@ -31,9 +31,8 @@ import { findAddOn, findPackage, formatUsd } from "@/lib/packages";
  * policies, so this route is the only writer and nothing client-side can
  * read the records back.
  */
-const TO_EMAIL = process.env.CONTACT_TO_EMAIL ?? DIRECT_EMAIL;
-const FROM_EMAIL =
-  process.env.CONTACT_FROM_EMAIL ?? "MVella Studios <onboarding@resend.dev>";
+const TO_EMAIL = process.env.CONTACT_TO_EMAIL ?? NOTIFY_EMAIL;
+const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL ?? DEFAULT_FROM_EMAIL;
 
 const schema = z.object({
   fullName: z.string().trim().min(1, "Full name is required").max(200),
