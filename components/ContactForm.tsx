@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { fieldClass, labelClass } from "./form-styles";
 import { DIRECT_EMAIL } from "@/lib/contact";
+import { trackGoogleAdsConversion } from "@/lib/google-ads";
 
 /**
  * Standalone contact form for /contact (spec §4 fields, §5 submission).
@@ -12,6 +13,10 @@ import { DIRECT_EMAIL } from "@/lib/contact";
  * The route answers 503 until RESEND_API_KEY is set in the environment, in
  * which case the error state surfaces the direct mailto rather than
  * pretending the message was sent.
+ *
+ * On a real 2xx response, fires the Google Ads conversion once (ref-gated so
+ * React remounts / double-success paths can't double-count). Failures and
+ * honeypot hits never fire.
  */
 const PROJECT_TYPES = ["Website", "Web App", "iOS App", "Other"] as const;
 
@@ -27,6 +32,8 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  /** Guards against firing the Ads conversion more than once per mount. */
+  const conversionSent = useRef(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,6 +53,12 @@ export default function ContactForm() {
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+
+      if (!conversionSent.current) {
+        conversionSent.current = true;
+        trackGoogleAdsConversion();
+      }
+
       setStatus("success");
       form.reset();
     } catch {

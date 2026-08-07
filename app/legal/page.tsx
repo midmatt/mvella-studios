@@ -59,9 +59,16 @@ export default function LegalPage() {
         It collects aggregate, non-identifying data — page views, referrers,
         and general browser, device, and country information. It does not use
         cookies, does not track you across other sites, and visitor
-        identifiers are anonymized and discarded daily. Beyond that, the only
-        automatic collection is what&rsquo;s strictly necessary for hosting to
-        function (standard server request logs).
+        identifiers are anonymized and discarded daily.
+      </p>
+      <p>
+        This site also loads the Google Ads (gtag) tag to measure advertising
+        performance. When you successfully submit the contact form, a
+        conversion event may be sent to Google Ads. Google may set or read
+        cookies and process device and interaction data under its own privacy
+        policy. Beyond that, the only automatic collection is what&rsquo;s
+        strictly necessary for hosting to function (standard server request
+        logs).
       </p>
 
       <h2>How We Use This Information</h2>
@@ -72,9 +79,14 @@ export default function LegalPage() {
           To improve the site (only if analytics are actually in use — see
           above)
         </li>
+        <li>
+          To measure whether Google Ads led to a contact-form submission
+        </li>
       </ul>
       <p>
-        We do not sell your information. We do not use it for advertising.
+        We do not sell your information. We do not use form contents for
+        advertising audiences — Google Ads is used only to attribute
+        conversions from ads that already ran.
       </p>
 
       <h2>Third-Party Services</h2>
@@ -93,6 +105,10 @@ export default function LegalPage() {
         <li>
           <strong>Supabase</strong> — stores records of signed Service
           Agreements (name, email, agreement version, timestamp, IP address).
+        </li>
+        <li>
+          <strong>Google Ads</strong> — measures ad conversions from the
+          contact form (gtag).
         </li>
       </ul>
       <p>

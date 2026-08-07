@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { bodyFont, displayFont, monoFont } from "./fonts";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import { GOOGLE_ADS_ID } from "@/lib/google-ads";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,6 +29,20 @@ export default function RootLayout({
             privacy policy at /legal describes exactly this; if analytics
             ever changes, change both. */}
         <Analytics />
+        {/* Google Ads base tag — conversion events fire from ContactForm
+            after a successful /api/contact response. */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-gtag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GOOGLE_ADS_ID}');
+          `}
+        </Script>
       </body>
     </html>
   );
