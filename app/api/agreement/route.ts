@@ -131,9 +131,13 @@ export async function POST(request: Request) {
           `RECORD    ${row.id}`,
         ].join("\n"),
       });
+      if (error) {
+        console.error("agreement notification failed:", JSON.stringify(error));
+      }
       emails.notification = !error;
-    } catch {
+    } catch (err) {
       /* row is the record; see header comment */
+      console.error("agreement notification threw:", err);
     }
 
     try {
@@ -157,9 +161,13 @@ export async function POST(request: Request) {
           "MVella Studios · South Florida",
         ].join("\n"),
       });
+      if (error) {
+        console.error("agreement confirmation failed:", JSON.stringify(error));
+      }
       emails.confirmation = !error;
-    } catch {
+    } catch (err) {
       /* as above */
+      console.error("agreement confirmation threw:", err);
     }
   }
 

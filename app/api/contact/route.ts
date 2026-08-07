@@ -225,6 +225,9 @@ export async function POST(request: Request) {
   });
 
   if (error) {
+    // Log the provider's own message — without it a failed send is a bare
+    // 502 with nothing to diagnose from.
+    console.error("contact notification failed:", JSON.stringify(error));
     return NextResponse.json(
       { error: "Failed to send notification" },
       { status: 502 }
@@ -234,14 +237,18 @@ export async function POST(request: Request) {
   // Auto-reply is best-effort: the sandbox sender can't deliver to arbitrary
   // addresses, and losing the confirmation must not fail a delivered lead.
   try {
-    await resend.emails.send({
+    const { error: replyError } = await resend.emails.send({
       from: FROM_EMAIL,
       to: data.email,
       subject: "Got your message — MVella Studios",
       text: autoReplyText(data),
     });
-  } catch {
+    if (replyError) {
+      console.error("contact auto-reply failed:", JSON.stringify(replyError));
+    }
+  } catch (err) {
     // Notification already landed; nothing actionable for the visitor.
+    console.error("contact auto-reply threw:", err);
   }
 
   return NextResponse.json({ ok: true });
