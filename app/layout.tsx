@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import { bodyFont, displayFont, monoFont } from "./fonts";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -22,6 +23,10 @@ export default function RootLayout({
         <Nav />
         <main>{children}</main>
         <Footer />
+        {/* Vercel Web Analytics — aggregate page views, no cookies. The
+            privacy policy at /legal describes exactly this; if analytics
+            ever changes, change both. */}
+        <Analytics />
       </body>
     </html>
   );

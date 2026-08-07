@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import LegalDocument, { Placeholder } from "@/components/LegalDocument";
+import LegalDocument from "@/components/LegalDocument";
 
 /**
- * Transcribed from terms-of-use.md. These govern the *website* — the Service
- * Agreement at /agreement governs actual development work. Replaces the
- * VoiceLocal app terms that stood in here previously.
+ * Transcribed from terms-of-use.md, all REPLACE markers resolved to what
+ * Matthew confirmed on 2026-08-07: effective date Aug 7 2026, Florida
+ * governing law.
  *
- * Three REPLACE markers from the source render as phosphor placeholders.
- * Two of them (liability language, governing law) are explicitly flagged in
- * the source as needing an attorney's review against Florida law.
+ * ⚠️ NOT ATTORNEY-REVIEWED. The source flagged the liability limitation as
+ * jurisdiction-sensitive and needing review against Florida law. Matthew
+ * chose to remove that note from the public page and track it privately —
+ * this comment and the README launch checklist are that tracking.
  */
 export const metadata: Metadata = {
   title: "Terms of Use — MVella Studios",
@@ -21,12 +22,7 @@ export default function TermsPage() {
   return (
     <LegalDocument
       title="Terms of Use"
-      meta={
-        <>
-          Effective date:{" "}
-          <Placeholder>REPLACE — set when this page goes live</Placeholder>
-        </>
-      }
+      meta="Effective date: August 7, 2026"
     >
       <p>
         These Terms of Use govern your use of the MVella Studios website (the
@@ -76,16 +72,13 @@ export default function TermsPage() {
       </p>
 
       <h2>Limitation of Liability</h2>
+      {/* The source's attorney-review note lived here; removed from the
+          public page per Matthew (2026-08-07), tracked in the header
+          comment and README launch checklist. */}
       <p>
         To the fullest extent permitted by law, Matthew Vella / MVella Studios
         is not liable for any indirect, incidental, or consequential damages
-        arising from your use of the Site.{" "}
-        <Placeholder>
-          REPLACE/CONFIRM: liability limitation language is
-          jurisdiction-sensitive and this general version should be reviewed
-          against Florida law (or wherever the business is formally based)
-          before relying on it.
-        </Placeholder>
+        arising from your use of the Site.
       </p>
 
       <h2>Third-Party Links</h2>
@@ -97,10 +90,8 @@ export default function TermsPage() {
 
       <h2>Governing Law</h2>
       <p>
-        <Placeholder>
-          REPLACE — typically the state where the business operates (e.g.,
-          Florida). Confirm before publishing.
-        </Placeholder>
+        These Terms are governed by the laws of the State of Florida, without
+        regard to its conflict-of-laws principles.
       </p>
 
       <h2>Changes to These Terms</h2>

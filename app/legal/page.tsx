@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
-import LegalDocument, { Placeholder } from "@/components/LegalDocument";
+import LegalDocument from "@/components/LegalDocument";
 
 /**
- * Transcribed from legal-privacy-policy.md. This is the real MVella Studios
- * policy — it describes the contact form, quote builder, Resend, Vercel, and
- * the Supabase agreement records, all of which this site actually does. It
- * replaces the VoiceLocal app policy that stood in here previously.
+ * Transcribed from legal-privacy-policy.md, all REPLACE markers resolved to
+ * what Matthew confirmed on 2026-08-07: effective date Aug 7 2026, Vercel
+ * Web Analytics (installed in app/layout.tsx the same day — the section
+ * describes what actually runs), and agreement-record retention of
+ * engagement + 5 years (chosen to outlast Florida's 5-year statute of
+ * limitations on written contracts).
  *
- * Three REPLACE markers from the source are rendered as phosphor
- * placeholders and must be resolved before publishing. One of them (the
- * automatic-collection section) is answerable today: no analytics package is
- * installed, so nothing beyond strictly-necessary function is collected —
- * but that is Matthew's line to write, not mine to quietly insert into a
- * legal document.
+ * The source's author-facing instruction sentence ("fix the copy to match
+ * reality before publishing") was removed in this finalization pass — it
+ * was an instruction for this exact step, not client-facing policy.
  */
 export const metadata: Metadata = {
   title: "Legal & Privacy — MVella Studios",
@@ -24,20 +23,12 @@ export default function LegalPage() {
   return (
     <LegalDocument
       title="Legal &amp; Privacy"
-      meta={
-        <>
-          Effective date:{" "}
-          <Placeholder>REPLACE — set when this page goes live</Placeholder>
-        </>
-      }
+      meta="Effective date: August 7, 2026"
     >
       <p>
         This page explains what information MVella Studios (&ldquo;we,&rdquo;
         &ldquo;us&rdquo;) collects through this website, how it&rsquo;s used,
-        and who it&rsquo;s shared with. If anything here doesn&rsquo;t match
-        how the site actually works, fix the copy to match reality before
-        publishing — this document should describe what the site does, not
-        what it aspires to do.
+        and who it&rsquo;s shared with.
       </p>
 
       <h2>Information We Collect</h2>
@@ -63,14 +54,13 @@ export default function LegalPage() {
         <strong>Information collected automatically:</strong>
       </p>
       <p>
-        <Placeholder>
-          REPLACE — this section depends on what&rsquo;s actually running. If
-          the site uses Vercel Analytics, confirm and describe what it collects
-          (typically aggregate, non-identifying page-view data). If no
-          analytics/cookies are in use beyond what&rsquo;s strictly necessary
-          for the site to function, say so plainly instead of describing
-          tracking that doesn&rsquo;t exist.
-        </Placeholder>
+        This site uses Vercel Web Analytics to understand how it&rsquo;s used.
+        It collects aggregate, non-identifying data — page views, referrers,
+        and general browser, device, and country information. It does not use
+        cookies, does not track you across other sites, and visitor
+        identifiers are anonymized and discarded daily. Beyond that, the only
+        automatic collection is what&rsquo;s strictly necessary for hosting to
+        function (standard server request logs).
       </p>
 
       <h2>How We Use This Information</h2>
@@ -115,12 +105,8 @@ export default function LegalPage() {
         your inquiry and for reasonable business record-keeping. Signed Service
         Agreement records are retained for as long as needed to support the
         underlying engagement and for a reasonable period afterward for
-        legal/business record purposes —{" "}
-        <Placeholder>
-          REPLACE with a specific retention period once decided (e.g.,
-          &ldquo;for the duration of the engagement plus 3 years&rdquo;)
-        </Placeholder>
-        .
+        legal/business record purposes — for the duration of the engagement
+        plus five (5) years.
       </p>
 
       <h2>Your Rights</h2>

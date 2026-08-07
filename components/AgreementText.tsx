@@ -1,23 +1,25 @@
-import { Placeholder } from "./LegalDocument";
-
 /**
- * Transcribed from client-service-agreement.md — the real document. This
- * replaces the draft that was authored here when the file didn't yet exist.
+ * Transcribed from client-service-agreement.md, with every REPLACE marker
+ * resolved to the terms Matthew confirmed on 2026-08-07:
  *
- * Sections 1–14 are verbatim. The source's trailing signature block (the
- * "- [ ] I have read…" checkbox and the blank Full name / Company / Date
- * rules) is intentionally NOT rendered as text: those are the paper-form
- * stand-ins for the live form directly below this document, and printing
- * empty underscores beside real inputs would read as a broken page. The
- * consent paragraph that introduces them IS rendered, since it is the
- * operative language, and the checkbox label in AgreementForm reuses the
- * source's exact wording.
+ *   §3  50% deposit / 50% on delivery · pause after 15 days late
+ *   §5  two revision rounds included · $45/hour beyond
+ *   §12 fourteen (14) days' termination notice
+ *   §13 Florida governing law
  *
- * ⚠️ SEVEN REPLACE markers remain, rendered as phosphor placeholders —
- * payment terms, late-payment window, revision rounds, hourly rate,
- * liability review, termination notice, and governing law. Section 8 also
- * carries an explicit instruction to have an attorney review it. Until these
- * are resolved, AGREEMENT_VERSION stays suffixed "-draft".
+ * The source's trailing signature block (the "- [ ] I have read…" checkbox
+ * and blank underscore rules) is intentionally NOT rendered as text: those
+ * are paper-form stand-ins for the live form directly below this document.
+ * The consent paragraph that introduces them IS rendered, and the checkbox
+ * label in AgreementForm reuses the source's exact wording.
+ *
+ * ⚠️ NOT ATTORNEY-REVIEWED. The source document instructed that Section 8's
+ * liability cap (and the enforceability caveat about gross negligence /
+ * willful misconduct) be reviewed by an attorney before relying on it.
+ * Matthew chose to remove that note from the public page and track it
+ * privately (2026-08-07) — this comment and the README launch checklist are
+ * that tracking. If the wording changes after review, bump
+ * AGREEMENT_VERSION in lib/agreement.ts.
  *
  * Styling comes from .legal-prose (globals.css) via the parent.
  */
@@ -63,8 +65,7 @@ export default function AgreementText() {
           source code transfer, app submission) are handed over
         </li>
         <li>
-          Late payments beyond <Placeholder>REPLACE (e.g., 15 days)</Placeholder>{" "}
-          may pause work until resolved
+          Late payments beyond fifteen (15) days may pause work until resolved
         </li>
       </ul>
 
@@ -79,10 +80,9 @@ export default function AgreementText() {
 
       <h2>5. Revisions</h2>
       <p>
-        This Agreement includes{" "}
-        <Placeholder>REPLACE (e.g., &ldquo;two rounds of revisions&rdquo;)</Placeholder>{" "}
-        on delivered work. Additional revision rounds are billed at{" "}
-        <Placeholder>REPLACE</Placeholder> hourly rate.
+        This Agreement includes two (2) rounds of revisions on delivered
+        work. Additional revision rounds are billed at a rate of $45 per
+        hour.
       </p>
 
       <h2>6. Intellectual Property</h2>
@@ -138,15 +138,9 @@ export default function AgreementText() {
         including lost profits or lost data, even if advised of the possibility
         of such damages.
       </p>
-      <p>
-        <Placeholder>
-          REPLACE/CONFIRM before use: liability caps are not enforceable in
-          every circumstance (e.g., many jurisdictions won&rsquo;t let a cap
-          apply to gross negligence or willful misconduct) — this clause should
-          be reviewed by an attorney familiar with your state&rsquo;s law
-          before you rely on it.
-        </Placeholder>
-      </p>
+      {/* The source's attorney-review note lived here; removed from the
+          public page per Matthew (2026-08-07), tracked in the header
+          comment above and the README launch checklist. */}
 
       <h2>9. Client&rsquo;s Own Responsibilities &amp; Liabilities</h2>
       <p>
@@ -177,19 +171,18 @@ export default function AgreementText() {
 
       <h2>12. Termination</h2>
       <p>
-        Either party may terminate this Agreement with{" "}
-        <Placeholder>REPLACE (e.g., &ldquo;14 days&rdquo;)</Placeholder>{" "}
-        written notice. Upon termination, the Client pays for all work
-        completed up to the termination date; the Developer delivers all work
-        completed to that point.
+        Either party may terminate this Agreement with fourteen (14)
+        days&rsquo; written notice. Upon termination, the Client pays for all
+        work completed up to the termination date; the Developer delivers all
+        work completed to that point.
       </p>
 
       <h2>13. Governing Law &amp; Disputes</h2>
       <p>
-        <Placeholder>
-          REPLACE — typically the state where the Developer operates (e.g.,
-          Florida). Confirm with an attorney before publishing.
-        </Placeholder>
+        This Agreement is governed by the laws of the State of Florida,
+        without regard to its conflict-of-laws principles. Any dispute
+        arising out of this Agreement will be brought in the state or federal
+        courts located in Florida.
       </p>
 
       <h2>14. Entire Agreement</h2>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import AgreementForm from "@/components/AgreementForm";
-import { Placeholder } from "@/components/LegalDocument";
 import { AGREEMENT_VERSION, resolveQuote } from "@/lib/agreement";
 
 export const metadata: Metadata = {
@@ -37,15 +36,9 @@ export default function AgreementPage({
           <h1 className="font-display text-h2 text-paper">
             MVella Studios &mdash; Service Agreement
           </h1>
-          {/* The source document marks its own version line REPLACE, so it
-              is flagged here like every other unresolved marker. The string
-              itself is live data — it is written into each consent record. */}
+          {/* Live data — this string is written into each consent record. */}
           <p className="mt-4 text-body text-paper/50">
-            Version {AGREEMENT_VERSION}{" "}
-            <Placeholder>
-              REPLACE with a real version number, and bump it every time this
-              document&rsquo;s terms change
-            </Placeholder>
+            Version {AGREEMENT_VERSION}
           </p>
           <p className="mt-6 max-w-xl text-body text-paper/70">
             Read the agreement below, then sign it electronically. Signing

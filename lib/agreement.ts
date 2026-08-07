@@ -9,13 +9,14 @@ import { computeTotal, findAddOn, findPackage } from "./packages";
  * in any substantive way — records pointing at a stale version are evidence
  * of agreement to text that no longer exists.
  *
- * 1.1: Section 3's payment-terms placeholder resolved to real 50/50 terms
- * (deposit percentage confirmed by Matthew, 2026-08-07). Still "-draft":
- * other REPLACE markers remain, and Section 8 still carries the source
- * document's instruction to have an attorney review it. Drop the suffix
- * once the text is final.
+ * 1.1 — finalized 2026-08-07: every REPLACE marker resolved to terms
+ * Matthew confirmed (50/50 payment, 15-day late window, two revision
+ * rounds, $45/hr beyond, 14-day termination notice, Florida law).
+ * Signatures from here are against finished wording. The liability
+ * clauses remain un-reviewed by an attorney — tracked in the README
+ * launch checklist, not on the public page, per Matthew's call.
  */
-export const AGREEMENT_VERSION = "1.1-draft";
+export const AGREEMENT_VERSION = "1.1";
 
 /**
  * Deposit charged when a quoted agreement is signed, as confirmed by

@@ -217,7 +217,19 @@ export async function POST(request: Request) {
   // STRIPE_SECRET_KEY (not connected at build time — the key's own
   // sk_test_/sk_live_ prefix decides mode; nothing here assumes either).
   let invoice: Awaited<ReturnType<typeof createDepositInvoice>> = null;
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
+
+  /**
+   * Key selection by environment: STRIPE_SECRET_KEY is the LIVE key and is
+   * used only on the production deployment; previews and local dev use
+   * STRIPE_TEST_SECRET_KEY so a test signing can never issue a real
+   * invoice. Falls back to the live key when no test key exists, so a
+   * missing test key degrades to prod behavior rather than silently
+   * skipping invoices.
+   */
+  const stripeKey =
+    process.env.VERCEL_ENV === "production"
+      ? process.env.STRIPE_SECRET_KEY
+      : process.env.STRIPE_TEST_SECRET_KEY ?? process.env.STRIPE_SECRET_KEY;
 
   if (quote && stripeKey) {
     invoice = await createDepositInvoice(

@@ -36,14 +36,13 @@ Copy `.env.example` to `.env.local`. Without these, the forms and signing flow f
 - `CONTACT_TO_EMAIL` — notification recipient. Defaults to `matthewvella.dev@gmail.com`.
 - `CONTACT_FROM_EMAIL` — verified sender. The default sandbox sender only delivers to the Resend account owner, so client auto-replies need a verified domain here.
 - `SUPABASE_URL` / `SUPABASE_SECRET_KEY` — the `agreements` table behind `/agreement`. Secret key is server-only; the table has RLS enabled with no policies, so the API route is its only reader and writer.
-- `NEXT_PUBLIC_SITE_URL` — used in the agreement confirmation email.
+- `STRIPE_SECRET_KEY` (live, production only) / `STRIPE_TEST_SECRET_KEY` (previews and local dev) — deposit invoicing when an agreement is signed via a quote link.
+- `NEXT_PUBLIC_SITE_URL` — used in emails and quote signing links.
 
-## Before launch
+## Outstanding
 
-- [ ] Resolve the 14 `REPLACE` markers on `/legal`, `/terms`, and `/agreement` — they render as highlighted placeholders on the live pages
-- [ ] Have an attorney review the agreement's liability and governing-law clauses (the source document says so explicitly)
-- [ ] Drop the `-draft` suffix from `AGREEMENT_VERSION` in `lib/agreement.ts` once the text is final
-- [ ] Confirm the draft pricing in `lib/packages.ts`
+- [ ] **Attorney review of the liability clauses** — Service Agreement §8 and the Terms' limitation-of-liability section. The source documents flagged both as jurisdiction-sensitive (caps may not hold for gross negligence / willful misconduct under Florida law). The public-page review notes were removed on 2026-08-07 at Matthew's direction; this checklist and the header comments in `components/AgreementText.tsx` / `app/terms/page.tsx` are the private tracking. If wording changes after review, bump `AGREEMENT_VERSION`.
 - [ ] Fill in the prior technical degree in `lib/profile.ts`
-- [ ] Reconcile the contact address split — the site shows `mvella303@gmail.com`, notifications go to `matthewvella.dev@gmail.com`
 - [ ] Add a favicon (no icon-only mark exists yet — see spec §7)
+
+Resolved 2026-08-07: all 14 `REPLACE` markers across `/legal`, `/terms`, `/agreement` (terms confirmed by Matthew — 50/50 payment, 15-day late window, two revision rounds, $45/hr, 14-day termination, Florida law, Aug 7 2026 effective dates, engagement+5yr retention); `AGREEMENT_VERSION` finalized at `1.1`; Vercel Web Analytics installed to match the privacy policy; pricing confirmed via the quote-builder pass; contact address unified on `matthewvella.dev@gmail.com`.
