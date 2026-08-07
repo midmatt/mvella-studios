@@ -1,48 +1,49 @@
-# vella-os — Linux Desktop Portfolio
+# MVella Studios
 
-Matthew Vella's portfolio, styled as a Linux desktop environment (XFCE/GNOME-flavored). Every "app" is a real Next.js route, so each one is a shareable URL:
+Studio site for Matthew Vella — freelance web and iOS development, South Florida.
 
-| App | Route | What it is |
-| --- | --- | --- |
-| Terminal | `/terminal` | Fake shell — `help`, `whoami`, `about`, `skills`, `education`, `projects`, `contact`, `neofetch`, `open <app>`, `clear`, with up/down command history |
-| Projects | `/projects` | File-manager UI over shipped apps and client work |
-| Resume | `/resume` | Document-viewer chrome; PDF generated on demand from content (no static PDF) |
-| Mail | `/contact` | Compose-window contact form (submit not wired yet) |
-| Browser | `/links` | Bookmark cards for external links |
-| Chat | `/chat` | Recruiter assistant — streams answers from Claude via `/api/chat`, grounded only in the `content/` files |
+Next.js 14 (App Router) · TypeScript · Tailwind · Framer Motion · Resend · Supabase · Vercel.
 
-Desktop windows are draggable, resizable, minimizable, maximizable, and z-stacked; window state survives route changes. On mobile (<768px) apps open full-screen with a back button instead.
+## Routes
 
-## Stack
+| Route | What it is |
+|---|---|
+| `/` | Hero, stats, featured work, services teaser, testimonials, closing CTA |
+| `/work` | Full work feed — case-file readout per project, from `lib/projects.ts` |
+| `/services` | Service cards + interactive quote builder (`#quote-builder`) |
+| `/contact` | Contact form |
+| `/about` | Bio, writing, and the full-time role inquiry form |
+| `/legal`, `/terms` | Legal & privacy, terms of use |
+| `/agreement` | Client service agreement + scroll-gated e-signature flow |
 
-Next.js 14 (App Router) · TypeScript · Tailwind CSS · Framer Motion · @react-pdf/renderer
+## Content lives in `lib/`
 
-## Run
+`projects.ts`, `services.ts`, `packages.ts`, `testimonials.ts`, and `profile.ts` are the single sources of truth. Adding a project or changing a price is a one-file edit — every surface that renders it follows.
+
+## Local development
 
 ```bash
 npm install
-npm run dev    # http://localhost:3000
-npm run build  # production build
+npm run dev     # http://localhost:3000
+npm run build
 ```
 
-## Deploy (Vercel)
+## Environment
 
-Push to a Git repo and import it at vercel.com, or run `npx vercel` from this directory.
+Copy `.env.example` to `.env.local`. Without these, the forms and signing flow fail loudly rather than silently reporting success:
 
-**Required environment variable:** `ANTHROPIC_API_KEY` (for the `/chat` assistant) — set it in Vercel Project Settings → Environment Variables, or copy `.env.local.example` to `.env.local` for local dev. The key is only ever read server-side in `app/api/chat/route.ts`. Without it, chat returns a friendly "not configured" message; the rest of the site works normally.
+- `RESEND_API_KEY` — required for `/api/contact` and `/api/agreement` to send mail. Absent → both routes answer 503 and the forms show a direct-email fallback.
+- `CONTACT_TO_EMAIL` — notification recipient. Defaults to `matthewvella.dev@gmail.com`.
+- `CONTACT_FROM_EMAIL` — verified sender. The default sandbox sender only delivers to the Resend account owner, so client auto-replies need a verified domain here.
+- `SUPABASE_URL` / `SUPABASE_SECRET_KEY` — the `agreements` table behind `/agreement`. Secret key is server-only; the table has RLS enabled with no policies, so the API route is its only reader and writer.
+- `NEXT_PUBLIC_SITE_URL` — used in the agreement confirmation email.
 
-## Recruiter chat (`/api/chat`)
+## Before launch
 
-- Server-side call to Claude (`claude-opus-4-8`), streamed back as plain text.
-- System prompt is generated in `lib/chat-system-prompt.ts` from the `content/` files — the assistant only knows what's in them and is instructed to say so (and point to the Mail app) when asked anything else. It speaks about Matthew in third person.
-- Abuse guards: 10 requests/min per IP (in-memory, per-instance), 1,000-char message cap, history trimmed to the last 12 turns.
-
-## Content — single source of truth
-
-All bio/project/resume copy lives in `content/` (`profile.ts`, `projects.ts`, `resume.ts`), mirroring `about-me-context_2.md`. Edit those files and rebuild — the Terminal, Projects, Resume (screen + downloaded PDF), Browser, and Chat apps all update from them. Structured to be swappable for a CMS later.
-
-## Known TODOs (intentional, per spec)
-
-- `components/apps/ContactApp.tsx` — real submit handler (e.g. Resend via a route handler)
-- `content/profile.ts` — contact/link values came from the PLACEHOLDER section of about-me-context; verify before deploy
-- `content/projects.ts` — per-project GitHub links not provided yet
+- [ ] Resolve the 14 `REPLACE` markers on `/legal`, `/terms`, and `/agreement` — they render as highlighted placeholders on the live pages
+- [ ] Have an attorney review the agreement's liability and governing-law clauses (the source document says so explicitly)
+- [ ] Drop the `-draft` suffix from `AGREEMENT_VERSION` in `lib/agreement.ts` once the text is final
+- [ ] Confirm the draft pricing in `lib/packages.ts`
+- [ ] Fill in the prior technical degree in `lib/profile.ts`
+- [ ] Reconcile the contact address split — the site shows `mvella303@gmail.com`, notifications go to `matthewvella.dev@gmail.com`
+- [ ] Add a favicon (no icon-only mark exists yet — see spec §7)

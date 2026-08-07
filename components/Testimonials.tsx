@@ -1,0 +1,61 @@
+import { publishedTestimonials, testimonials } from "@/lib/testimonials";
+import StarRating from "./StarRating";
+
+/**
+ * Testimonials — simple 3-card grid: name / company / star row / quote.
+ *
+ * Only entries that clear the placeholder check in lib/testimonials.ts are
+ * shown in production, so unconfirmed drafts can't ship. In development the
+ * drafts render too, marked as such, so the layout is reviewable before any
+ * real quotes exist — which is why this section looked "missing" before.
+ */
+const isDev = process.env.NODE_ENV === "development";
+
+export default function Testimonials() {
+  const entries = isDev ? testimonials : publishedTestimonials;
+  if (entries.length === 0) return null;
+
+  return (
+    <section
+      id="testimonials"
+      aria-label="Client testimonials"
+      className="border-t border-steel/40 bg-ink"
+    >
+      <div className="mx-auto max-w-6xl px-6 py-24">
+        <p className="mono-label text-phosphor">&gt; cat ./testimonials</p>
+        <h2 className="mt-4 font-display text-h2 text-paper">
+          What clients say
+        </h2>
+
+        <ul className="mt-14 grid gap-px bg-steel/40 md:grid-cols-3">
+          {entries.map((t) => (
+            <li
+              key={t.slug}
+              className="flex flex-col bg-panel p-8 transition-colors duration-300 hover:bg-panel-raised"
+            >
+              <StarRating rating={t.rating} />
+              <blockquote className="mt-6 flex-1 text-body text-paper/80">
+                “{t.quote}”
+              </blockquote>
+              <footer className="mt-8 border-t border-steel/40 pt-5">
+                <p className="mono-label text-paper">{t.name}</p>
+                <p className="mono-label mt-1.5 text-paper/50">{t.company}</p>
+              </footer>
+            </li>
+          ))}
+        </ul>
+
+        {isDev && publishedTestimonials.length !== testimonials.length && (
+          <p className="mono-label mt-8 border border-steel/60 px-4 py-3 text-phosphor">
+            &gt; dev only — {testimonials.length - publishedTestimonials.length}{" "}
+            draft entr
+            {testimonials.length - publishedTestimonials.length === 1
+              ? "y is"
+              : "ies are"}{" "}
+            hidden in production until real quotes replace the placeholders
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}

@@ -1,21 +1,29 @@
-import { identity } from "@/content/profile";
+import Hero from "@/components/Hero";
+import StatsBar from "@/components/StatsBar";
+import FeaturedWork from "@/components/FeaturedWork";
+import ServicesTeaser from "@/components/ServicesTeaser";
+import Testimonials from "@/components/Testimonials";
+import ClosingCta from "@/components/ClosingCta";
 
-export default function HomePage() {
+/**
+ * Condensed homepage. The full Work feed moved to /work, Services to
+ * /services, and the contact form to /contact; what's left here is the
+ * lighter teaser version of each, every one ending in a link to its page.
+ *
+ * Testimonials moved below the work and services blocks (it used to sit
+ * directly under the stats bar) — social proof reads better after there's
+ * something to be proof of. Hero, StatsBar, and Testimonials are otherwise
+ * untouched.
+ */
+export default function Home() {
   return (
     <>
-      {/* Desktop hint, bottom-right above the taskbar */}
-      <div className="pointer-events-none absolute bottom-16 right-5 hidden select-none text-right font-mono text-[11px] leading-relaxed text-ink-faint md:block">
-        <p className="text-ember">{identity.hostname} 1.0.0</p>
-        <p>double-click an icon to launch an app</p>
-        <p>every app is a shareable URL</p>
-      </div>
-
-      {/* Server-rendered summary for crawlers/screen readers */}
-      <div className="sr-only">
-        <h1>{identity.name}</h1>
-        <p>{identity.title}</p>
-        <p>{identity.shortBio}</p>
-      </div>
+      <Hero />
+      <StatsBar />
+      <FeaturedWork />
+      <ServicesTeaser />
+      <Testimonials />
+      <ClosingCta />
     </>
   );
 }

@@ -1,44 +1,27 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Ubuntu } from "next/font/google";
-import { DesktopShell } from "@/components/desktop/DesktopShell";
-import { identity } from "@/content/profile";
+import { bodyFont, displayFont, monoFont } from "./fonts";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
-const ubuntu = Ubuntu({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-ubuntu",
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-jetbrains",
-});
-
 export const metadata: Metadata = {
-  title: {
-    default: `${identity.name} — Portfolio`,
-    template: `%s · ${identity.name}`,
-  },
-  description: identity.shortBio,
+  title: "MVella Studios — Security-minded software, built and shipped.",
+  description:
+    "Freelance web and app development studio of Matthew Vella. Websites, iOS apps, and security-minded architecture for small businesses and products.",
 };
-
-// Set the theme before first paint to avoid a flash of the wrong theme.
-const themeScript = `try{var t=localStorage.getItem("vella-theme");if(t==="light")document.documentElement.dataset.theme="light"}catch(e){}`;
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
-      <body className={`${ubuntu.variable} ${jetbrains.variable} font-sans`}>
-        <DesktopShell>{children}</DesktopShell>
+    <html
+      lang="en"
+      className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}
+    >
+      <body>
+        <Nav />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
