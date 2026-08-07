@@ -18,14 +18,15 @@ export const metadata: Metadata = {
  * erroring. Without params the page works exactly as before: sign with no
  * pre-filled amount, no invoice.
  */
-export default function AgreementPage({
+export default async function AgreementPage({
   searchParams,
 }: {
-  searchParams: { package?: string; addons?: string };
+  searchParams: Promise<{ package?: string; addons?: string }>;
 }) {
+  const params = await searchParams;
   const quote = resolveQuote(
-    searchParams.package ?? null,
-    searchParams.addons?.split(",").filter(Boolean) ?? []
+    params.package ?? null,
+    params.addons?.split(",").filter(Boolean) ?? []
   );
 
   /* pt-16 clears the fixed 4rem nav, matching the other routes */

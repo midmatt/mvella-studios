@@ -2,7 +2,7 @@
 
 Studio site for Matthew Vella — freelance web and iOS development, South Florida.
 
-Next.js 14 (App Router) · TypeScript · Tailwind · Framer Motion · Resend · Supabase · Vercel.
+Next.js 15 (App Router) · TypeScript · Tailwind · Framer Motion · Resend · Supabase · Vercel.
 
 ## Routes
 
