@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { fieldClass, labelClass } from "./form-styles";
+import { DIRECT_EMAIL } from "@/lib/contact";
 
 /**
  * Standalone contact form for /contact (spec §4 fields, §5 submission).
@@ -21,8 +22,6 @@ const BUDGET_RANGES = [
   "$7,000+",
   "Not sure yet",
 ] as const;
-
-const DIRECT_EMAIL = "mvella303@gmail.com";
 
 type Status = "idle" | "submitting" | "success" | "error";
 

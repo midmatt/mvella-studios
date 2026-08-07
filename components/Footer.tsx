@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { DIRECT_EMAIL } from "@/lib/contact";
 
 export default function Footer() {
   return (
@@ -31,10 +32,10 @@ export default function Footer() {
               LinkedIn
             </a>
             <a
-              href="mailto:mvella303@gmail.com"
+              href={`mailto:${DIRECT_EMAIL}`}
               className="mono-label text-paper/70 transition-colors hover:text-phosphor"
             >
-              mvella303@gmail.com
+              {DIRECT_EMAIL}
             </a>
             <Link
               href="/legal"

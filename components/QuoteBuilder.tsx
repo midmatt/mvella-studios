@@ -10,6 +10,7 @@ import {
   packageTypes,
 } from "@/lib/packages";
 import { fieldClass, labelClass } from "./form-styles";
+import { DIRECT_EMAIL } from "@/lib/contact";
 
 /**
  * Quote builder for /services (spec §4): pick a package, stack add-ons,
@@ -23,8 +24,6 @@ import { fieldClass, labelClass } from "./form-styles";
  * source of truth.
  */
 type Status = "idle" | "submitting" | "success" | "error";
-
-const DIRECT_EMAIL = "mvella303@gmail.com";
 
 /** Card chrome shared by both steps; selection state varies the border. */
 function cardClass(selected: boolean): string {

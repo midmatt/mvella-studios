@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { fieldClass, labelClass } from "./form-styles";
+import { DIRECT_EMAIL } from "@/lib/contact";
 
 /**
  * "Hiring for a full-time role?" — the closing section of /about.
@@ -20,8 +21,6 @@ import { fieldClass, labelClass } from "./form-styles";
  * that rename was necessary.
  */
 type Status = "idle" | "submitting" | "success" | "error";
-
-const DIRECT_EMAIL = "mvella303@gmail.com";
 
 export default function HiringForm() {
   const [open, setOpen] = useState(false);

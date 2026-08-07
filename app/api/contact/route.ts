@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
+import { DIRECT_EMAIL } from "@/lib/contact";
 import {
   computeTotal,
   findAddOn,
@@ -22,11 +23,10 @@ import {
  * Without a key the route answers 503 and both forms fall back to showing
  * the direct email — a failed submission is never dressed up as a sent one.
  *
- * ⚠️ CONTACT_TO_EMAIL defaults to matthewvella.dev@gmail.com as specified
- * for this pass — note the rest of the site (footer, /contact sidebar)
- * still shows mvella303@gmail.com. Reconcile before launch.
+ * Notifications go to DIRECT_EMAIL (lib/contact.ts) unless overridden —
+ * the same address the site displays everywhere, so the two can't drift.
  */
-const TO_EMAIL = process.env.CONTACT_TO_EMAIL ?? "matthewvella.dev@gmail.com";
+const TO_EMAIL = process.env.CONTACT_TO_EMAIL ?? DIRECT_EMAIL;
 
 /**
  * Resend's shared onboarding sender works without domain verification but

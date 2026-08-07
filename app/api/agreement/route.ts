@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { z } from "zod";
 import { AGREEMENT_VERSION } from "@/lib/agreement";
+import { DIRECT_EMAIL } from "@/lib/contact";
 
 /**
  * Signing endpoint for /agreement. This writes a legal consent record, so
@@ -21,7 +22,7 @@ import { AGREEMENT_VERSION } from "@/lib/agreement";
  * policies, so this route is the only writer and nothing client-side can
  * read the records back.
  */
-const TO_EMAIL = process.env.CONTACT_TO_EMAIL ?? "matthewvella.dev@gmail.com";
+const TO_EMAIL = process.env.CONTACT_TO_EMAIL ?? DIRECT_EMAIL;
 const FROM_EMAIL =
   process.env.CONTACT_FROM_EMAIL ?? "MVella Studios <onboarding@resend.dev>";
 

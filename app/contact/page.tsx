@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
+import { DIRECT_EMAIL } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "Contact — MVella Studios",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 const DETAILS: Array<[label: string, value: string]> = [
   ["LOCATION", "SOUTH FLORIDA, USA"],
   ["RESPONSE", "< 24 HRS"],
-  ["EMAIL", "mvella303@gmail.com"],
+  ["EMAIL", DIRECT_EMAIL],
 ];
 
 export default function ContactPage() {

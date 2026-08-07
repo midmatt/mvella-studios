@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AGREEMENT_VERSION } from "@/lib/agreement";
 import AgreementText from "./AgreementText";
 import { fieldClass, labelClass } from "./form-styles";
+import { DIRECT_EMAIL } from "@/lib/contact";
 
 /**
  * Scroll-gated signing flow for /agreement (spec item list, this pass):
@@ -16,8 +17,6 @@ import { fieldClass, labelClass } from "./form-styles";
  * as an error with the direct email, never as success.
  */
 type Status = "idle" | "submitting" | "success" | "error";
-
-const DIRECT_EMAIL = "mvella303@gmail.com";
 
 /** Px of slack before the bottom still counting as "read to the end" —
  *  fractional scroll positions and zoom make an exact match unreliable. */
