@@ -49,17 +49,18 @@ export default function AgreementText() {
         Client do not obligate the Developer to the original timeline.
       </p>
 
+      {/* Deposit percentage confirmed by Matthew (2026-08-07). Keep in sync
+          with DEPOSIT_PERCENT in lib/agreement.ts — the invoice generated at
+          signing charges what this section promises. */}
       <h2>3. Payment Terms</h2>
-      <p>
-        <Placeholder>
-          REPLACE with your actual terms — a common freelance structure is:
-        </Placeholder>
-      </p>
       <ul>
-        <li>50% deposit due before work begins</li>
         <li>
-          Remaining 50% due before final deliverables (site launch, source code
-          transfer, app submission) are handed over
+          A 50% deposit is due before work begins. Where this Agreement is
+          signed against a quote, the deposit is invoiced at signing.
+        </li>
+        <li>
+          The remaining 50% is due before final deliverables (site launch,
+          source code transfer, app submission) are handed over
         </li>
         <li>
           Late payments beyond <Placeholder>REPLACE (e.g., 15 days)</Placeholder>{" "}

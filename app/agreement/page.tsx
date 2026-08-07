@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import AgreementForm from "@/components/AgreementForm";
 import { Placeholder } from "@/components/LegalDocument";
-import { AGREEMENT_VERSION } from "@/lib/agreement";
+import { AGREEMENT_VERSION, resolveQuote } from "@/lib/agreement";
 
 export const metadata: Metadata = {
   title: "Service Agreement — MVella Studios",
@@ -11,7 +11,24 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default function AgreementPage() {
+/**
+ * Accepts ?package=<slug>&addons=<slug,slug> — the link format built into
+ * quote-notification emails, which Matthew forwards to clients after
+ * reviewing the request. Slugs are validated and priced server-side by
+ * resolveQuote; garbage params degrade to the no-quote flow rather than
+ * erroring. Without params the page works exactly as before: sign with no
+ * pre-filled amount, no invoice.
+ */
+export default function AgreementPage({
+  searchParams,
+}: {
+  searchParams: { package?: string; addons?: string };
+}) {
+  const quote = resolveQuote(
+    searchParams.package ?? null,
+    searchParams.addons?.split(",").filter(Boolean) ?? []
+  );
+
   /* pt-16 clears the fixed 4rem nav, matching the other routes */
   return (
     <div className="pt-16">
@@ -36,7 +53,7 @@ export default function AgreementPage() {
           </p>
 
           <div className="mt-12 max-w-3xl">
-            <AgreementForm />
+            <AgreementForm quote={quote} />
           </div>
         </div>
       </section>

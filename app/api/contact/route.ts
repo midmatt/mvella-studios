@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
+import { agreementLink, resolveQuote } from "@/lib/agreement";
 import { DIRECT_EMAIL } from "@/lib/contact";
 import {
   computeTotal,
@@ -145,7 +146,24 @@ function notificationText(data: Submission): string {
     ...(data.projectType ? [`TYPE      ${data.projectType}`] : []),
     ...(data.budget ? [`BUDGET    ${data.budget}`] : []),
   ];
-  if (isQuote(data)) parts.push("", quoteBreakdown(data));
+  if (isQuote(data)) {
+    parts.push("", quoteBreakdown(data));
+
+    /**
+     * Ready-to-forward signing link for this exact quote. Deliberately only
+     * in Matthew's notification — clients are never auto-sent to /agreement;
+     * he reviews the request and forwards the link himself when ready.
+     */
+    const quote = resolveQuote(data.packageType, data.addOns);
+    if (quote) {
+      parts.push(
+        "",
+        "SIGNING LINK (forward to the client when ready — signing this",
+        `invoices the ${quote.deposit ? `$${quote.deposit.toLocaleString("en-US")} ` : ""}deposit):`,
+        agreementLink(quote)
+      );
+    }
+  }
   parts.push("", "MESSAGE", data.message);
   return parts.join("\n");
 }

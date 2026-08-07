@@ -2,8 +2,16 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { z } from "zod";
-import { AGREEMENT_VERSION } from "@/lib/agreement";
+import Stripe from "stripe";
+import {
+  AGREEMENT_VERSION,
+  DEPOSIT_PERCENT,
+  resolveQuote,
+  SITE_URL,
+  type Quote,
+} from "@/lib/agreement";
 import { DIRECT_EMAIL } from "@/lib/contact";
+import { findAddOn, findPackage, formatUsd } from "@/lib/packages";
 
 /**
  * Signing endpoint for /agreement. This writes a legal consent record, so
@@ -40,7 +48,95 @@ const schema = z.object({
   agreementVersion: z.literal(AGREEMENT_VERSION, {
     error: "Agreement version is out of date — reload the page",
   }),
+  /**
+   * Present when signing via a quote link. Slugs only — everything is
+   * re-priced server-side by resolveQuote, so a tampered request can change
+   * WHAT is quoted (visible in the record) but never what it costs.
+   */
+  packageType: z.string().max(100).optional(),
+  addOns: z.array(z.string().max(100)).max(20).optional(),
 });
+
+/**
+ * Creates (or reuses, matched by email) a Stripe customer and issues the
+ * deposit invoice for a quoted signing. Returns null on any failure — the
+ * signature is already recorded and must not be voided by billing trouble;
+ * a missing invoice is Matthew's to chase from the notification email.
+ *
+ * ACH note: us_bank_account is requested alongside card because ACH fees
+ * are far lower on invoices this size. If the Stripe account doesn't have
+ * ACH enabled, Stripe rejects the invoice — so on that failure it retries
+ * once as card-only rather than losing the invoice entirely.
+ */
+async function createDepositInvoice(
+  stripe: Stripe,
+  quote: Quote,
+  client: { fullName: string; company?: string; email: string },
+  agreementId: string
+): Promise<{ customerId: string; invoiceId: string; url: string | null } | null> {
+  try {
+    const existing = await stripe.customers.list({
+      email: client.email,
+      limit: 1,
+    });
+    const customer =
+      existing.data[0] ??
+      (await stripe.customers.create({
+        email: client.email,
+        name: client.fullName,
+        ...(client.company ? { description: client.company } : {}),
+      }));
+
+    const pkg = findPackage(quote.packageSlug);
+    const description = [
+      `Deposit (${DEPOSIT_PERCENT}%) — ${pkg?.name ?? quote.packageSlug}`,
+      ...quote.addOnSlugs.map((s) => findAddOn(s)?.name ?? s),
+    ].join(" + ");
+
+    const build = async (methods: Array<"card" | "us_bank_account">) => {
+      const invoice = await stripe.invoices.create({
+        customer: customer.id,
+        collection_method: "send_invoice",
+        days_until_due: 14,
+        auto_advance: false, // we deliver the link ourselves via Resend
+        payment_settings: { payment_method_types: methods },
+        metadata: { agreement_id: agreementId },
+      });
+      await stripe.invoiceItems.create({
+        customer: customer.id,
+        invoice: invoice.id,
+        // Stripe amounts are integer cents; quote.deposit is whole USD.
+        amount: quote.deposit * 100,
+        currency: "usd",
+        description,
+      });
+      return stripe.invoices.finalizeInvoice(invoice.id);
+    };
+
+    let finalized: Stripe.Invoice;
+    try {
+      finalized = await build(["card", "us_bank_account"]);
+    } catch (err) {
+      console.error(
+        "invoice with ACH failed, retrying card-only:",
+        err instanceof Error ? err.message : err
+      );
+      finalized = await build(["card"]);
+    }
+
+    return {
+      customerId: customer.id,
+      invoiceId: finalized.id,
+      url: finalized.hosted_invoice_url ?? null,
+    };
+  } catch (err) {
+    console.error(
+      "deposit invoice failed:",
+      err instanceof Error ? err.message : err
+    );
+    return null;
+  }
+}
 
 function clientIp(request: Request): string | null {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -83,6 +179,9 @@ export async function POST(request: Request) {
     auth: { persistSession: false },
   });
 
+  // Re-priced from lib/packages.ts; null when signing without a quote link.
+  const quote = resolveQuote(data.packageType, data.addOns);
+
   // ── The consent record. `.select().single()` makes the insert prove
   // itself: if no row comes back, the client sees an error, not success.
   const { data: row, error: insertError } = await supabase
@@ -94,6 +193,10 @@ export async function POST(request: Request) {
       agreement_version: data.agreementVersion,
       ip_address: clientIp(request),
       user_agent: request.headers.get("user-agent"),
+      package_type: quote?.packageSlug ?? null,
+      add_ons: quote?.addOnSlugs ?? null,
+      quoted_total_usd: quote?.total ?? null,
+      deposit_usd: quote?.deposit ?? null,
       // agreed_at: column default now() — server clock, never the client's
     })
     .select("id, agreed_at")
@@ -107,7 +210,43 @@ export async function POST(request: Request) {
     );
   }
 
-  // ── Row exists; emails are best-effort from here.
+  // ── Row exists; invoicing and emails are best-effort from here.
+  //
+  // Order matters: the invoice is created BEFORE the emails so its hosted
+  // payment link can ride in the client's confirmation. Requires
+  // STRIPE_SECRET_KEY (not connected at build time — the key's own
+  // sk_test_/sk_live_ prefix decides mode; nothing here assumes either).
+  let invoice: Awaited<ReturnType<typeof createDepositInvoice>> = null;
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+
+  if (quote && stripeKey) {
+    invoice = await createDepositInvoice(
+      new Stripe(stripeKey),
+      quote,
+      { fullName: data.fullName, company: data.company, email: data.email },
+      row.id
+    );
+
+    if (invoice) {
+      // Best-effort back-reference; the invoice also carries agreement_id
+      // in its metadata, so the linkage survives even if this update fails.
+      const { error: updateError } = await supabase
+        .from("agreements")
+        .update({
+          stripe_customer_id: invoice.customerId,
+          stripe_invoice_id: invoice.invoiceId,
+        })
+        .eq("id", row.id);
+      if (updateError) {
+        console.error("failed to record invoice id:", updateError.message);
+      }
+    }
+  } else if (quote && !stripeKey) {
+    console.error(
+      "quoted signing without STRIPE_SECRET_KEY — no deposit invoice created"
+    );
+  }
+
   const emails = { notification: false, confirmation: false };
   const apiKey = process.env.RESEND_API_KEY;
 
@@ -130,6 +269,17 @@ export async function POST(request: Request) {
           `VERSION   ${data.agreementVersion}`,
           `SIGNED    ${row.agreed_at}`,
           `RECORD    ${row.id}`,
+          ...(quote
+            ? [
+                `QUOTED    ${formatUsd(quote.total)} (${
+                  findPackage(quote.packageSlug)?.name ?? quote.packageSlug
+                }${quote.addOnSlugs.length ? " + add-ons" : ""})`,
+                `DEPOSIT   ${formatUsd(quote.deposit)} (${DEPOSIT_PERCENT}%)`,
+                invoice
+                  ? `INVOICE   ${invoice.invoiceId}${invoice.url ? `\n          ${invoice.url}` : ""}`
+                  : `INVOICE   NOT CREATED — ${stripeKey ? "Stripe error, see logs" : "STRIPE_SECRET_KEY missing"}; invoice manually`,
+              ]
+            : []),
         ].join("\n"),
       });
       if (error) {
@@ -149,12 +299,24 @@ export async function POST(request: Request) {
         text: [
           `Hi ${data.fullName},`,
           "",
-          "This confirms you signed the MVella Studios Client Service Agreement.",
+          "This confirms you signed the MVella Studios Service Agreement.",
           "",
           stamp,
           "",
           "The full text you agreed to is available at:",
-          `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/agreement`,
+          `${SITE_URL}/agreement`,
+          ...(quote && invoice?.url
+            ? [
+                "",
+                `Your ${formatUsd(quote.deposit)} deposit invoice (${DEPOSIT_PERCENT}% of ${formatUsd(quote.total)}) is ready — payable by card or ACH bank transfer:`,
+                invoice.url,
+              ]
+            : quote
+              ? [
+                  "",
+                  `A ${formatUsd(quote.deposit)} deposit invoice (${DEPOSIT_PERCENT}% of ${formatUsd(quote.total)}) will follow separately.`,
+                ]
+              : []),
           "",
           "Keep this email for your records.",
           "",

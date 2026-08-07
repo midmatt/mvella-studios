@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AGREEMENT_VERSION } from "@/lib/agreement";
+import { AGREEMENT_VERSION, DEPOSIT_PERCENT, type Quote } from "@/lib/agreement";
+import { findAddOn, findPackage, formatUsd } from "@/lib/packages";
 import AgreementText from "./AgreementText";
 import { fieldClass, labelClass } from "./form-styles";
 import { DIRECT_EMAIL } from "@/lib/contact";
@@ -22,7 +23,14 @@ type Status = "idle" | "submitting" | "success" | "error";
  *  fractional scroll positions and zoom make an exact match unreliable. */
 const BOTTOM_TOLERANCE = 24;
 
-export default function AgreementForm() {
+/**
+ * `quote` arrives resolved and priced by the server component (never from
+ * client input). When present, the quoted scope renders above the document
+ * and the slugs travel with the signature — the API re-prices them again on
+ * its side. When null, the flow is the original: sign, no amounts, no
+ * invoice.
+ */
+export default function AgreementForm({ quote }: { quote: Quote | null }) {
   const scrollboxRef = useRef<HTMLDivElement>(null);
   const [readToEnd, setReadToEnd] = useState(false);
   const [agreed, setAgreed] = useState(false);
@@ -74,6 +82,8 @@ export default function AgreementForm() {
           email: fields.email,
           website: fields.website,
           agreementVersion: AGREEMENT_VERSION,
+          packageType: quote?.packageSlug,
+          addOns: quote?.addOnSlugs,
         }),
       });
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
@@ -94,6 +104,8 @@ export default function AgreementForm() {
           Signed and recorded{agreedAt ? ` at ${agreedAt}` : ""} against
           version {AGREEMENT_VERSION}. A copy has been emailed to you for your
           records.
+          {quote &&
+            ` The email also includes the ${formatUsd(quote.deposit)} deposit invoice (${DEPOSIT_PERCENT}% of ${formatUsd(quote.total)}), payable by card or bank transfer.`}
         </p>
       </div>
     );
@@ -101,6 +113,36 @@ export default function AgreementForm() {
 
   return (
     <div>
+      {/* The quoted scope this signature is for — same terminal-readout
+          voice as the quote builder's quote.sh panel. */}
+      {quote && (
+        <div className="mb-8 border border-steel bg-panel/90 p-6 font-mono">
+          <p className="mono-label text-phosphor">&gt; quote.sh --signed-for</p>
+          <div className="mt-4 space-y-1.5 text-[14px] text-paper/80">
+            <p>
+              {findPackage(quote.packageSlug)?.name} —{" "}
+              {formatUsd(findPackage(quote.packageSlug)?.price ?? 0)}
+            </p>
+            {quote.addOnSlugs.map((slug) => {
+              const a = findAddOn(slug);
+              if (!a) return null;
+              return (
+                <p key={slug} className="text-paper/60">
+                  + {a.name} — {formatUsd(a.price)}
+                  {a.recurring ? "/mo" : ""}
+                </p>
+              );
+            })}
+            <p className="!mt-4 border-t border-steel/60 pt-3 text-paper">
+              TOTAL {formatUsd(quote.total)} ·{" "}
+              <span className="text-phosphor">
+                {formatUsd(quote.deposit)} deposit ({DEPOSIT_PERCENT}%)
+                invoiced at signing
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
       {/* The document, gated behind its own scrollbox */}
       <div
         ref={scrollboxRef}
