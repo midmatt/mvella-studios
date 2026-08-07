@@ -33,9 +33,13 @@ const stats: Array<{ value: number | string; label: string; suffix?: string }> =
     label: "Products shipped",
   },
   {
-    value: projects.filter(
-      (p) => p.category === "client" && p.status === "live"
-    ).length,
+    /**
+     * Hardcoded rather than derived from lib/projects.ts — two of the four
+     * live client sites aren't on the public work feed yet (client OK still
+     * pending / screenshots not ready), but the count should still reflect
+     * real shipped work.
+     */
+    value: 4,
     label: "Client sites live",
   },
   {
