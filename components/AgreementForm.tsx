@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AGREEMENT_VERSION, DEPOSIT_PERCENT, type Quote } from "@/lib/agreement";
 import { findAddOn, findPackage, formatUsd } from "@/lib/packages";
 import AgreementText from "./AgreementText";
@@ -19,9 +19,6 @@ import { DIRECT_EMAIL } from "@/lib/contact";
  */
 type Status = "idle" | "submitting" | "success" | "error";
 
-/** Px of slack before the bottom still counting as "read to the end" —
- *  fractional scroll positions and zoom make an exact match unreliable. */
-const BOTTOM_TOLERANCE = 24;
 
 /**
  * `quote` arrives resolved and priced by the server component (never from
@@ -32,6 +29,7 @@ const BOTTOM_TOLERANCE = 24;
  */
 export default function AgreementForm({ quote }: { quote: Quote | null }) {
   const scrollboxRef = useRef<HTMLDivElement>(null);
+  const endMarkerRef = useRef<HTMLDivElement>(null);
   const [readToEnd, setReadToEnd] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [name, setName] = useState("");
@@ -39,25 +37,69 @@ export default function AgreementForm({ quote }: { quote: Quote | null }) {
   const [status, setStatus] = useState<Status>("idle");
   const [agreedAt, setAgreedAt] = useState<string | null>(null);
 
-  const checkScroll = useCallback(() => {
-    const el = scrollboxRef.current;
-    if (!el) return;
-    if (el.scrollTop + el.clientHeight >= el.scrollHeight - BOTTOM_TOLERANCE) {
-      setReadToEnd(true); // one-way latch — scrolling back up doesn't re-lock
-    }
-  }, []);
-
   /**
-   * Run once on mount: if the document happens to fit inside the box (large
-   * viewport, browser zoom-out), there is no bottom to scroll to and the
-   * checkbox would be permanently locked. Re-checked on resize for the same
-   * reason.
+   * Unlocks only once the end-of-document marker has genuinely been reached.
+   *
+   * This replaces a scrollTop/scrollHeight calculation that had a hole: the
+   * expression "scrollTop + clientHeight >= scrollHeight" is trivially TRUE
+   * whenever the box isn't clipping its content, and it ran on mount and on
+   * every window resize. Any layout state where the box didn't constrain the
+   * document — the height class not applying, reader/accessibility modes, a
+   * measurement taken before layout settled — unlocked signing instantly,
+   * with no scrolling at all.
+   *
+   * An IntersectionObserver on a real end-of-document element can't be fooled
+   * that way, but the root has to match how the document is actually being
+   * scrolled:
+   *
+   *   - Box clips its content (normal): root is the BOX. Reaching the marker
+   *     inside it is exactly "scrolled to the end". Rooting at the viewport
+   *     instead would strand mobile users, whose box bottom sits below the
+   *     fold even after they've scrolled it fully.
+   *   - Box doesn't clip (the bug above): the document flows in the page, so
+   *     root is the VIEWPORT — the marker has to be scrolled to on the page
+   *     like any other content. Never unlocks for free.
+   *
+   * Re-attached on resize because clipping can change with the viewport.
+   * Latches one-way — scrolling back up doesn't re-lock.
    */
   useEffect(() => {
-    checkScroll();
-    window.addEventListener("resize", checkScroll);
-    return () => window.removeEventListener("resize", checkScroll);
-  }, [checkScroll]);
+    const marker = endMarkerRef.current;
+    const box = scrollboxRef.current;
+    if (!marker || !box) return;
+
+    // Fail open on browsers without IntersectionObserver rather than making
+    // the agreement impossible to sign.
+    if (typeof IntersectionObserver === "undefined") {
+      setReadToEnd(true);
+      return;
+    }
+
+    let observer: IntersectionObserver | undefined;
+
+    const attach = () => {
+      observer?.disconnect();
+      // 8px of slack absorbs sub-pixel rounding on fractional zoom levels.
+      const clips = box.scrollHeight - box.clientHeight > 8;
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            setReadToEnd(true);
+            observer?.disconnect();
+          }
+        },
+        { root: clips ? box : null, threshold: 1 }
+      );
+      observer.observe(marker);
+    };
+
+    attach();
+    window.addEventListener("resize", attach);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", attach);
+    };
+  }, []);
 
   const canSubmit =
     agreed && name.trim().length > 0 && email.trim().length > 0;
@@ -146,10 +188,9 @@ export default function AgreementForm({ quote }: { quote: Quote | null }) {
       {/* The document, gated behind its own scrollbox */}
       <div
         ref={scrollboxRef}
-        onScroll={checkScroll}
         tabIndex={0}
         role="region"
-        aria-label="Client Service Agreement — scroll to the end to enable signing"
+        aria-label="Service Agreement — scroll to the end to enable signing"
         className="h-[28rem] overflow-y-auto border border-steel bg-panel p-6 md:p-8"
       >
         {/* Trim only the leading element's top margin — the document opens
@@ -158,6 +199,15 @@ export default function AgreementForm({ quote }: { quote: Quote | null }) {
         <div className="legal-prose [&>*:first-child]:mt-0">
           <AgreementText />
         </div>
+
+        {/*
+          End-of-document marker watched by the IntersectionObserver above.
+          Given height so `threshold: 1` has a real box to fully reveal —
+          a zero-height element can never be "100% visible" in some engines.
+          mt-6 keeps it below the last line, so the observer fires only once
+          the closing paragraph has actually been read past.
+        */}
+        <div ref={endMarkerRef} aria-hidden="true" className="mt-6 h-2 w-full" />
       </div>
 
       <p aria-live="polite" className="mono-label mt-3 text-paper/40">
