@@ -21,7 +21,7 @@ export const profile: Profile = {
   name: "Matthew Vella",
 
   bio: [
-    "I'm a cybersecurity student at FIU's Honors College with a prior technical degree, and I've been building software the whole way through. Three of my own apps are shipped and live, and I freelance for small businesses across South Florida — marketing sites, storefronts, and iOS apps.",
+    "I'm a cybersecurity student at FIU's Honors College with a CTE in cybersecurity and a minor in AI, and I've been building software the whole way through. Three of my own apps are shipped and live, and I freelance for small businesses across South Florida — marketing sites, storefronts, and iOS apps.",
     "Most developers treat security as something you add at the end. I don't. Every project starts with the same questions I'd ask if I were the one attacking it: what's exposed, what's trusted, and what happens when something fails. I build software the way I'd want it secured.",
   ],
 
@@ -29,7 +29,7 @@ export const profile: Profile = {
 
   education: [
     "B.S. Cybersecurity — Florida International University, Honors College",
-    "REPLACE — prior technical degree (confirm exact title and institution)",
+    "CTE in Cybersecurity — Minor in Artificial Intelligence",
   ],
 
   // Left empty deliberately — see the note in components/About.tsx.
