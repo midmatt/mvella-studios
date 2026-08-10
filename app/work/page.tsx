@@ -4,7 +4,7 @@ import WorkFeed from "@/components/WorkFeed";
 export const metadata: Metadata = {
   title: "Work — MVella Studios",
   description:
-    "Shipped products and client work: iOS apps on the App Store, and Next.js sites and storefronts for South Florida businesses.",
+    "Shipped products and client work: mobile apps on the App Store, and Next.js sites and storefronts for South Florida businesses.",
 };
 
 /**

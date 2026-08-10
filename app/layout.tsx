@@ -10,7 +10,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "MVella Studios — Security-minded software, built and shipped.",
   description:
-    "Freelance web and app development studio of Matthew Vella. Websites, iOS apps, and security-minded architecture for small businesses and products.",
+    "Freelance web and app development studio of Matthew Vella. Websites, mobile apps, and security-minded architecture for small businesses and products.",
 };
 
 export default function RootLayout({

@@ -6,7 +6,7 @@ import HiringForm from "@/components/HiringForm";
 export const metadata: Metadata = {
   title: "About — MVella Studios",
   description:
-    "Matthew Vella — cybersecurity student and freelance developer building web and iOS software with security in mind, from South Florida.",
+    "Matthew Vella — cybersecurity student and freelance developer building web and mobile software with security in mind, from South Florida.",
 };
 
 /**

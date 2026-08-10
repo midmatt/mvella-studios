@@ -18,7 +18,7 @@ import { trackGoogleAdsConversion } from "@/lib/google-ads";
  * React remounts / double-success paths can't double-count). Failures and
  * honeypot hits never fire.
  */
-const PROJECT_TYPES = ["Website", "Web App", "iOS App", "Other"] as const;
+const PROJECT_TYPES = ["Website", "Web App", "Mobile App", "Other"] as const;
 
 const BUDGET_RANGES = [
   "Under $1,000",

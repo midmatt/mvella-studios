@@ -37,15 +37,16 @@ export const services: Service[] = [
     ],
   },
   {
-    slug: "ios-mobile",
-    title: "iOS & Mobile Apps",
-    teaser: "React Native apps taken all the way to a live App Store listing.",
+    slug: "mobile-apps",
+    title: "Mobile Apps",
+    teaser:
+      "React Native apps for iOS and Android, taken through store review to a live listing.",
     description:
-      "React Native and Expo, from first build to an approved App Store listing. AlarmQR and CyberSimply are both shipped and live — including the review process, which is where most first-time submissions stall.",
+      "React Native and Expo for iOS and Android, from first build to an approved store listing. AlarmQR and CyberSimply are both shipped and live on the App Store — including the review process, which is where most first-time submissions stall.",
     deliverables: [
-      "React Native + Expo",
+      "React Native + Expo (iOS and Android)",
       "Native integrations where they matter",
-      "App Store submission and review handling",
+      "App Store and Play Store submission and review handling",
       "Post-launch updates",
     ],
   },

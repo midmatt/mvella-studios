@@ -1,6 +1,6 @@
 # MVella Studios
 
-Studio site for Matthew Vella — freelance web and iOS development, South Florida.
+Studio site for Matthew Vella — freelance web and mobile development, South Florida.
 
 Next.js 15 (App Router) · TypeScript · Tailwind · Framer Motion · Resend · Supabase · Vercel.
 

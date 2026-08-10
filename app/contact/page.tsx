@@ -5,7 +5,7 @@ import { DIRECT_EMAIL } from "@/lib/contact";
 export const metadata: Metadata = {
   title: "Contact — MVella Studios",
   description:
-    "Start a project with MVella Studios — freelance web and iOS development from South Florida. Response within 24 hours.",
+    "Start a project with MVella Studios — freelance web and mobile development from South Florida. Response within 24 hours.",
 };
 
 const DETAILS: Array<[label: string, value: string]> = [

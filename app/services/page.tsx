@@ -6,7 +6,7 @@ import QuoteBuilder from "@/components/QuoteBuilder";
 export const metadata: Metadata = {
   title: "Services — MVella Studios",
   description:
-    "Web development, iOS apps, security-minded architecture, and SEO and performance audits — freelance, from South Florida.",
+    "Web development, mobile apps, security-minded architecture, and SEO and performance audits — freelance, from South Florida.",
 };
 
 export default function ServicesPage() {

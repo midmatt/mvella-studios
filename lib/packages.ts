@@ -48,10 +48,11 @@ export const packageTypes: PackageType[] = [
     blurb: "Auth, dashboard, database — software, not just pages.",
   },
   {
-    slug: "ios-app",
-    name: "iOS App",
+    slug: "mobile-app",
+    name: "Mobile App",
     price: 4300,
-    blurb: "React Native, carried through App Store review to a live listing.",
+    blurb:
+      "React Native for iOS and Android, carried through store review to a live listing.",
   },
 ];
 
@@ -90,7 +91,11 @@ export const addOns: AddOn[] = [
 ];
 
 export const findPackage = (slug: string) =>
-  packageTypes.find((p) => p.slug === slug);
+  packageTypes.find((p) => p.slug === slug) ??
+  // Old quote/agreement links used ios-app before the package was renamed.
+  (slug === "ios-app"
+    ? packageTypes.find((p) => p.slug === "mobile-app")
+    : undefined);
 
 export const findAddOn = (slug: string) => addOns.find((a) => a.slug === slug);
 

@@ -143,7 +143,7 @@ export default function Hero() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="mt-8 max-w-xl text-body text-paper/70 md:mt-12"
           >
-            Freelance web and iOS development from a cybersecurity student who
+            Freelance web and mobile development from a cybersecurity student who
             ships fast without cutting corners on security.
           </motion.p>
 
