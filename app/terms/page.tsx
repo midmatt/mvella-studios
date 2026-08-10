@@ -16,7 +16,7 @@ import { LEGAL_EMAIL } from "@/lib/contact";
 export const metadata: Metadata = {
   title: "Terms of Use — MVella Studios",
   description:
-    "Terms governing use of the MVella Studios website, including intellectual property, quote estimates, and limitation of liability.",
+    "Terms of use for the MVella Studios website — intellectual property, quote estimates, limitation of liability, and Florida governing law.",
 };
 
 export default function TermsPage() {

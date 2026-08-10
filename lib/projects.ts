@@ -28,6 +28,8 @@ export interface Project {
   caseStudyUrl?: string; // internal /work/[slug]
   featured: boolean;
   category: "product" | "client";
+  /** Matching service slug from lib/services.ts for in-content cross-links. */
+  relatedServiceSlug?: string;
   /**
    * Optional — no project has reviews yet. When populated, the work feed
    * renders an averaged star row; when absent it renders nothing.
@@ -75,6 +77,7 @@ export const projects: Project[] = [
     liveUrl: "https://apps.apple.com/us/app/cyber-simply/id6752630267",
     featured: true,
     category: "product",
+    relatedServiceSlug: "mobile-apps",
   },
   {
     slug: "alarmqr",
@@ -88,6 +91,7 @@ export const projects: Project[] = [
     liveUrl: "https://apps.apple.com/us/app/alarm-qr/id6755059776",
     featured: true,
     category: "product",
+    relatedServiceSlug: "mobile-apps",
   },
   {
     slug: "voicelocal",
@@ -101,6 +105,7 @@ export const projects: Project[] = [
     liveUrl: "https://www.voicelocalapp.com",
     featured: true,
     category: "product",
+    relatedServiceSlug: "web-development",
   },
   {
     slug: "oot-tastings",
@@ -114,6 +119,7 @@ export const projects: Project[] = [
     liveUrl: "https://www.ootastings.com",
     featured: true,
     category: "client",
+    relatedServiceSlug: "web-development",
   },
   {
     slug: "holy-beliefs",
@@ -127,5 +133,6 @@ export const projects: Project[] = [
     liveUrl: "https://www.holybeliefs.com",
     featured: true,
     category: "client",
+    relatedServiceSlug: "web-development",
   },
 ];

@@ -42,7 +42,7 @@ function Card({ project }: { project: (typeof projects)[number] }) {
         ) : (
           <Image
             src={project.heroImage}
-            alt={`${project.name} — screenshot`}
+            alt={`${project.name} — featured project screenshot`}
             fill
             sizes="(min-width: 768px) 552px, calc(100vw - 48px)"
             className={`${

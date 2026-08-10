@@ -22,6 +22,12 @@
     scroll-margin-top: 4rem;
   }
 
+  /* Project / service hash targets used by internal cross-links */
+  article[id],
+  li[id] {
+    scroll-margin-top: 5rem;
+  }
+
   ::selection {
     @apply bg-phosphor text-ink;
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   addOns,
   computeTotal,
@@ -11,6 +11,7 @@ import {
 } from "@/lib/packages";
 import { fieldClass, labelClass } from "./form-styles";
 import { DIRECT_EMAIL } from "@/lib/contact";
+import { trackGoogleAdsConversion } from "@/lib/google-ads";
 
 /**
  * Quote builder for /services (spec §4): pick a package, stack add-ons,
@@ -48,6 +49,8 @@ export default function QuoteBuilder() {
   const [pkg, setPkg] = useState<string | null>(null);
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Status>("idle");
+  /** Guards against firing the Ads conversion more than once per mount. */
+  const conversionSent = useRef(false);
 
   const selectedPackage = pkg ? findPackage(pkg) : undefined;
   // Array.from, not spread — tsconfig targets es5, where Set isn't iterable.
@@ -91,6 +94,12 @@ export default function QuoteBuilder() {
         }),
       });
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+
+      if (!conversionSent.current) {
+        conversionSent.current = true;
+        trackGoogleAdsConversion();
+      }
+
       setStatus("success");
       form.reset();
     } catch {

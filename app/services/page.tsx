@@ -2,18 +2,29 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Services from "@/components/Services";
 import QuoteBuilder from "@/components/QuoteBuilder";
+import FaqSection from "@/components/FaqSection";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Services — MVella Studios",
   description:
-    "Web development, mobile apps, security-minded architecture, and SEO and performance audits — freelance, from South Florida.",
+    "Web development, mobile apps, security-minded architecture, and SEO audits — freelance packages and a live quote builder from South Florida.",
 };
 
 export default function ServicesPage() {
   /* pt-16 clears the fixed 4rem nav, matching /about and /work */
   return (
     <div className="pt-16">
+      <div className="mx-auto max-w-6xl px-6 pt-10">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Services" },
+          ]}
+        />
+      </div>
       <Services />
+      <FaqSection />
       <QuoteBuilder />
 
       <section

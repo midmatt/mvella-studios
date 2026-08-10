@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { fieldClass, labelClass } from "./form-styles";
@@ -10,13 +11,13 @@ import { trackGoogleAdsConversion } from "@/lib/google-ads";
  * Standalone contact form for /contact (spec §4 fields, §5 submission).
  *
  * Posts to /api/contact (zod validation, Resend notification + auto-reply).
- * The route answers 503 until RESEND_API_KEY is set in the environment, in
- * which case the error state surfaces the direct mailto rather than
- * pretending the message was sent.
+ * On a real 2xx response, redirects to /contact/thank-you (the conversion
+ * landing). Failures and honeypot hits never redirect.
  *
- * On a real 2xx response, fires the Google Ads conversion once (ref-gated so
- * React remounts / double-success paths can't double-count). Failures and
- * honeypot hits never fire.
+ * Google Ads: thank-you page is the preferred conversion surface going
+ * forward (see comment there). trackGoogleAdsConversion() still runs here
+ * until Matthew confirms Ads is listening on the thank-you URL only —
+ * remove this call to avoid double-counting once that is set.
  */
 const PROJECT_TYPES = ["Website", "Web App", "Mobile App", "Other"] as const;
 
@@ -28,9 +29,10 @@ const BUDGET_RANGES = [
   "Not sure yet",
 ] as const;
 
-type Status = "idle" | "submitting" | "success" | "error";
+type Status = "idle" | "submitting" | "error";
 
 export default function ContactForm() {
+  const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   /** Guards against firing the Ads conversion more than once per mount. */
   const conversionSent = useRef(false);
@@ -59,22 +61,10 @@ export default function ContactForm() {
         trackGoogleAdsConversion();
       }
 
-      setStatus("success");
-      form.reset();
+      router.push("/contact/thank-you");
     } catch {
       setStatus("error");
     }
-  }
-
-  if (status === "success") {
-    return (
-      <div className="border border-phosphor bg-panel p-8">
-        <p className="mono-label text-phosphor">&gt; message sent</p>
-        <p className="mt-4 text-body text-paper/80">
-          Thanks — I&rsquo;ll get back to you within 24 hours.
-        </p>
-      </div>
-    );
   }
 
   return (

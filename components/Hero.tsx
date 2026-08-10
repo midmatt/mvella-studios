@@ -152,19 +152,19 @@ export default function Hero() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="mt-8 flex flex-wrap items-center gap-4 md:mt-10"
           >
-            <Link
-              href="/#work"
-              className="mono-label bg-phosphor px-6 py-3 text-ink transition-colors hover:bg-paper"
-            >
-              View Work
-            </Link>
-            {/* Straight to the form now. Scrolling to #contact would land on
-                the closing section, whose only content is a button to here. */}
+            {/* Primary CTA — dominant filled phosphor. Secondary is a quieter
+                text link so it doesn't compete above the fold. */}
             <Link
               href="/contact"
-              className="mono-label border border-steel px-6 py-3 text-paper transition-colors hover:border-phosphor hover:text-phosphor"
+              className="mono-label bg-phosphor px-6 py-3 text-ink transition-colors hover:bg-paper"
             >
               Start a Project
+            </Link>
+            <Link
+              href="/work"
+              className="mono-label px-2 py-3 text-paper/70 underline-offset-4 transition-colors hover:text-phosphor hover:underline"
+            >
+              View Work →
             </Link>
           </motion.div>
 

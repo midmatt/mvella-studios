@@ -17,7 +17,7 @@ import { LEGAL_EMAIL } from "@/lib/contact";
 export const metadata: Metadata = {
   title: "Legal & Privacy — MVella Studios",
   description:
-    "What information MVella Studios collects through this website, how it is used, and which third-party services process it.",
+    "Privacy policy for MVella Studios — what we collect on this website, how it is used, retention, and which third-party services process it.",
 };
 
 export default function LegalPage() {

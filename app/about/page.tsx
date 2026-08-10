@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import About from "@/components/About";
 import HiringForm from "@/components/HiringForm";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "About — MVella Studios",
   description:
-    "Matthew Vella — cybersecurity student and freelance developer building web and mobile software with security in mind, from South Florida.",
+    "Matthew Vella — FIU Honors cybersecurity student and freelance developer building secure web and mobile software from South Florida.",
 };
 
 /**
@@ -44,6 +45,14 @@ export default function AboutPage() {
   return (
     /* Clears the fixed 4rem nav */
     <div className="pt-16">
+      <div className="mx-auto max-w-6xl px-6 pt-10">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "About" },
+          ]}
+        />
+      </div>
       <About />
 
       <section

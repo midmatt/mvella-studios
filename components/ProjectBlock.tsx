@@ -9,6 +9,7 @@ import {
   resolvedUrl,
   type Project,
 } from "@/lib/projects";
+import { services } from "@/lib/services";
 import CaseFileReadout from "./CaseFileReadout";
 import StarRating, { averageRating } from "./StarRating";
 import DeviceFrame, { type DeviceVariant } from "./DeviceFrame";
@@ -97,7 +98,10 @@ export default function ProjectBlock({
     "mono-label shrink-0 border border-steel px-5 py-3 text-paper transition-colors hover:border-phosphor hover:text-phosphor";
 
   return (
-    <article className={`group ${mirrored ? "bg-panel" : "bg-ink"}`}>
+    <article
+      id={project.slug}
+      className={`group ${mirrored ? "bg-panel" : "bg-ink"}`}
+    >
       <motion.div
         className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-20 md:py-28"
         variants={{
@@ -125,7 +129,7 @@ export default function ProjectBlock({
             ) : (
               <Image
                 src={project.heroImage}
-                alt={`${project.name} — hero`}
+                alt={`${project.name} — product screenshot`}
                 fill
                 sizes={
                   frameVariant === "phone"
@@ -159,6 +163,22 @@ export default function ProjectBlock({
               count={project.reviews?.length}
               className={`mt-4 ${mirrored ? "md:justify-end" : ""}`}
             />
+            {project.relatedServiceSlug ? (
+              <p
+                className={`mono-label mt-4 text-paper/50 ${
+                  mirrored ? "md:text-right" : ""
+                }`}
+              >
+                Service:{" "}
+                <Link
+                  href={`/services#${project.relatedServiceSlug}`}
+                  className="text-phosphor underline-offset-4 transition-colors hover:underline"
+                >
+                  {services.find((s) => s.slug === project.relatedServiceSlug)
+                    ?.title ?? project.relatedServiceSlug}
+                </Link>
+              </p>
+            ) : null}
           </div>
 
           {cta ? (

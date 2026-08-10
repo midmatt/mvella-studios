@@ -19,6 +19,8 @@ export interface Service {
   /** Longer copy for the /services card. */
   description: string;
   deliverables: string[];
+  /** Project slugs from lib/projects.ts to link as related case studies. */
+  relatedProjectSlugs?: string[];
 }
 
 export const services: Service[] = [
@@ -35,6 +37,7 @@ export const services: Service[] = [
       "Contact and booking flows wired to real email",
       "Deployed with a custom domain",
     ],
+    relatedProjectSlugs: ["oot-tastings", "holy-beliefs"],
   },
   {
     slug: "mobile-apps",
@@ -49,6 +52,7 @@ export const services: Service[] = [
       "App Store and Play Store submission and review handling",
       "Post-launch updates",
     ],
+    relatedProjectSlugs: ["alarmqr", "cybersimply"],
   },
   {
     slug: "security-architecture",
@@ -63,6 +67,7 @@ export const services: Service[] = [
       "Input validation and secret-handling pass",
       "Dependency and configuration audit",
     ],
+    relatedProjectSlugs: ["alarmqr", "cybersimply"],
   },
   {
     slug: "seo-performance",
@@ -76,5 +81,6 @@ export const services: Service[] = [
       "Findings ranked by impact vs. effort",
       "Fixes scoped so they can be actioned",
     ],
+    relatedProjectSlugs: ["oot-tastings", "holy-beliefs"],
   },
 ];

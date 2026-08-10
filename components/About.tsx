@@ -56,7 +56,7 @@ export default function About() {
       aria-label="About Matthew Vella"
       className="border-t border-steel/40 bg-ink"
     >
-      <div className="mx-auto max-w-6xl px-6 py-24">
+      <div className="mx-auto max-w-6xl px-6 pb-24 pt-8 md:pt-12">
         <p className="mono-label text-phosphor">&gt; whoami --verbose</p>
         {/* h1: About owns the /about page, which had no top-level heading.
             Already styled at h2 size, so this is semantics only. */}
@@ -141,7 +141,7 @@ export default function About() {
                 {hasPhoto ? (
                   <Image
                     src={profile.photo}
-                    alt={profile.name}
+                    alt={`${profile.name}, founder of MVella Studios`}
                     fill
                     sizes="(min-width: 768px) 22rem, 18rem"
                     className="object-cover"

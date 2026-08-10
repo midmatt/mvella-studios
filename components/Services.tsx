@@ -1,14 +1,19 @@
+import Link from "next/link";
+import { projects } from "@/lib/projects";
 import { services } from "@/lib/services";
 
 /**
  * Full services list for /services (spec §4). The quote builder lives in its
  * own section below this one and owns the #quote-builder anchor the nav's
  * "> get a quote" button targets.
+ *
+ * Each card links to related work via relatedProjectSlugs so services and
+ * case studies cross-link in content (not just the footer/nav).
  */
 export default function Services() {
   return (
     <section id="services" aria-label="Services" className="bg-ink">
-      <div className="mx-auto max-w-6xl px-6 pb-16 pt-24">
+      <div className="mx-auto max-w-6xl px-6 pb-16 pt-8 md:pt-12">
         <p className="mono-label text-phosphor">&gt; ls ./services</p>
         <h1 className="mt-4 font-display text-h2 text-paper">
           What I build
@@ -20,36 +25,60 @@ export default function Services() {
 
       {/* gap-px over a steel wash = hairline divider grid, as in Testimonials */}
       <ul className="mx-auto grid max-w-6xl gap-px bg-steel/40 md:grid-cols-2">
-        {services.map((service, index) => (
-          <li
-            key={service.slug}
-            className="flex flex-col bg-panel p-8 transition-colors duration-300 hover:bg-panel-raised md:p-10"
-          >
-            <p className="mono-label text-phosphor">
-              &gt; {String(index + 1).padStart(2, "0")}
-            </p>
-            <h2 className="mt-4 font-display text-h3 text-paper">
-              {service.title}
-            </h2>
-            <p className="mt-4 flex-1 text-body text-paper/70">
-              {service.description}
-            </p>
+        {services.map((service, index) => {
+          const related = (service.relatedProjectSlugs ?? [])
+            .map((slug) => projects.find((p) => p.slug === slug))
+            .filter((p): p is (typeof projects)[number] => Boolean(p));
 
-            <ul className="mt-8 space-y-2 border-t border-steel/40 pt-6">
-              {service.deliverables.map((item) => (
-                <li
-                  key={item}
-                  className="mono-label flex gap-3 text-paper/60"
-                >
-                  <span aria-hidden="true" className="text-phosphor">
-                    ·
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
+          return (
+            <li
+              key={service.slug}
+              id={service.slug}
+              className="flex flex-col bg-panel p-8 transition-colors duration-300 hover:bg-panel-raised md:p-10"
+            >
+              <p className="mono-label text-phosphor">
+                &gt; {String(index + 1).padStart(2, "0")}
+              </p>
+              <h2 className="mt-4 font-display text-h3 text-paper">
+                {service.title}
+              </h2>
+              <p className="mt-4 flex-1 text-body text-paper/70">
+                {service.description}
+              </p>
+
+              <ul className="mt-8 space-y-2 border-t border-steel/40 pt-6">
+                {service.deliverables.map((item) => (
+                  <li
+                    key={item}
+                    className="mono-label flex gap-3 text-paper/60"
+                  >
+                    <span aria-hidden="true" className="text-phosphor">
+                      ·
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              {related.length > 0 ? (
+                <p className="mono-label mt-6 text-paper/50">
+                  Related work:{" "}
+                  {related.map((project, i) => (
+                    <span key={project.slug}>
+                      {i > 0 ? <span className="text-steel"> · </span> : null}
+                      <Link
+                        href={`/work#${project.slug}`}
+                        className="text-phosphor underline-offset-4 transition-colors hover:underline"
+                      >
+                        {project.name}
+                      </Link>
+                    </span>
+                  ))}
+                </p>
+              ) : null}
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

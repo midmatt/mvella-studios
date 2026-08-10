@@ -12,7 +12,7 @@ import ProjectBlock from "./ProjectBlock";
 export default function WorkFeed() {
   return (
     <section id="work" aria-label="Selected work">
-      <div className="mx-auto max-w-6xl px-6 pb-16 pt-24">
+      <div className="mx-auto max-w-6xl px-6 pb-16 pt-8 md:pt-12">
         <p className="mono-label text-phosphor">&gt; ls ./work</p>
         <h1 className="mt-4 font-display text-h2 text-paper">Selected work</h1>
       </div>
