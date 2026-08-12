@@ -7,12 +7,14 @@ import { useState } from "react";
 import {
   isAppStoreProject,
   resolvedUrl,
+  resolvedWebsiteUrl,
   type Project,
 } from "@/lib/projects";
 import { services } from "@/lib/services";
 import CaseFileReadout from "./CaseFileReadout";
 import StarRating, { averageRating } from "./StarRating";
 import DeviceFrame, { type DeviceVariant } from "./DeviceFrame";
+import PhonePreviewGallery from "./PhonePreviewGallery";
 
 interface Cta {
   label: string;
@@ -35,23 +37,45 @@ function domainOf(url?: string): string | undefined {
   return hostnameOf(url)?.replace(/^www\./i, "");
 }
 
-function ctaFor(project: Project): Cta | null {
+/**
+ * Primary download / live link, plus an optional marketing-site link when
+ * both exist (CyberSimply: App Store + cybersimply.com).
+ */
+function ctasFor(project: Project): Cta[] {
+  const ctas: Cta[] = [];
   const liveUrl = resolvedUrl(project);
+  const websiteUrl = resolvedWebsiteUrl(project);
 
   if (liveUrl) {
     // Label follows the destination, not the category — VoiceLocal is a
     // product that lives on its own site rather than the App Store.
-    return {
+    ctas.push({
       label: isAppStoreProject(project) ? "View on App Store" : "Visit Site",
       href: liveUrl,
       external: true,
-    };
+    });
   }
-  if (project.category === "client") return null;
+
+  if (websiteUrl && websiteUrl !== liveUrl) {
+    ctas.push({
+      label: "Visit Website",
+      href: websiteUrl,
+      external: true,
+    });
+  }
+
+  if (ctas.length > 0) return ctas;
+  if (project.category === "client") return [];
   if (project.caseStudyUrl) {
-    return { label: "Read the case study", href: project.caseStudyUrl, external: false };
+    return [
+      {
+        label: "Read the case study",
+        href: project.caseStudyUrl,
+        external: false,
+      },
+    ];
   }
-  return null;
+  return [];
 }
 
 /**
@@ -79,7 +103,7 @@ export default function ProjectBlock({
       transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
     },
   };
-  const cta = ctaFor(project);
+  const ctas = ctasFor(project);
 
   /**
    * Variant is derived from the destination, not a slug list: anything on
@@ -96,6 +120,8 @@ export default function ProjectBlock({
 
   const ctaClass =
     "mono-label shrink-0 border border-steel px-5 py-3 text-paper transition-colors hover:border-phosphor hover:text-phosphor";
+  const ctaSecondaryClass =
+    "mono-label shrink-0 border border-steel/60 px-5 py-3 text-paper/80 transition-colors hover:border-phosphor hover:text-phosphor";
 
   return (
     <article
@@ -117,30 +143,37 @@ export default function ProjectBlock({
         </div>
 
         <motion.div variants={reveal}>
-          <DeviceFrame variant={frameVariant} domain={domainOf(liveUrl)}>
-            {imageFailed ? (
-              <div
-                className={`flex h-full w-full items-center justify-center px-4 text-center ${
-                  mirrored ? "bg-panel-raised" : "bg-panel"
-                }`}
-              >
-                <span className="mono-label text-paper/60">{project.name}</span>
-              </div>
-            ) : (
-              <Image
-                src={project.heroImage}
-                alt={`${project.name} — product screenshot`}
-                fill
-                sizes={
-                  frameVariant === "phone"
-                    ? "(min-width: 640px) 16rem, 15rem"
-                    : "(min-width: 1200px) 1104px, calc(100vw - 48px)"
-                }
-                className="object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-[1.02]"
-                onError={() => setImageFailed(true)}
-              />
-            )}
-          </DeviceFrame>
+          {project.previewImages && project.previewImages.length > 0 ? (
+            <PhonePreviewGallery
+              images={project.previewImages}
+              name={project.name}
+            />
+          ) : (
+            <DeviceFrame variant={frameVariant} domain={domainOf(liveUrl)}>
+              {imageFailed ? (
+                <div
+                  className={`flex h-full w-full items-center justify-center px-4 text-center ${
+                    mirrored ? "bg-panel-raised" : "bg-panel"
+                  }`}
+                >
+                  <span className="mono-label text-paper/60">{project.name}</span>
+                </div>
+              ) : (
+                <Image
+                  src={project.heroImage}
+                  alt={`${project.name} — product screenshot`}
+                  fill
+                  sizes={
+                    frameVariant === "phone"
+                      ? "(min-width: 640px) 16rem, 15rem"
+                      : "(min-width: 1200px) 1104px, calc(100vw - 48px)"
+                  }
+                  className="object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-[1.02]"
+                  onError={() => setImageFailed(true)}
+                />
+              )}
+            </DeviceFrame>
+          )}
         </motion.div>
 
         <motion.div
@@ -181,21 +214,27 @@ export default function ProjectBlock({
             ) : null}
           </div>
 
-          {cta ? (
-            cta.external ? (
-              <a
-                href={cta.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={ctaClass}
-              >
-                {cta.label}
-              </a>
-            ) : (
-              <Link href={cta.href} className={ctaClass}>
-                {cta.label}
-              </Link>
-            )
+          {ctas.length > 0 ? (
+            <div className="flex shrink-0 flex-wrap gap-3">
+              {ctas.map((cta, i) => {
+                const className = i === 0 ? ctaClass : ctaSecondaryClass;
+                return cta.external ? (
+                  <a
+                    key={cta.href}
+                    href={cta.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={className}
+                  >
+                    {cta.label}
+                  </a>
+                ) : (
+                  <Link key={cta.href} href={cta.href} className={className}>
+                    {cta.label}
+                  </Link>
+                );
+              })}
+            </div>
           ) : (
             project.status === "in_development" && (
               <p className="mono-label shrink-0 text-paper/50">

@@ -24,13 +24,13 @@ export default function Nav() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-steel/40 bg-ink/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" aria-label="MVella Studios — home" className="shrink-0">
-          {/* Keep the two-line mirror lockup intact — the flip is the identity (spec §7) */}
           <Image
-            src="/brand/mvella-wordmark-dark.svg"
+            src="/brand/mvella-logo.png"
             alt="MVella Studios"
-            width={95}
-            height={36}
+            width={55}
+            height={40}
             priority
+            className="h-10 w-auto object-contain"
           />
         </Link>
 

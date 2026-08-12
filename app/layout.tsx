@@ -40,6 +40,8 @@ const localBusinessJsonLd = {
   "@type": "ProfessionalService",
   name: STUDIO_NAME,
   url: SITE_ORIGIN,
+  logo: `${SITE_ORIGIN}/brand/mvella-logo.png`,
+  image: `${SITE_ORIGIN}/brand/mvella-logo.png`,
   description:
     "Freelance web and mobile development studio — security-minded software for small businesses and products.",
   areaServed: STUDIO_AREA,

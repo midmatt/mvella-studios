@@ -13,7 +13,9 @@ export default function StickyMobileCta() {
   const hidden =
     pathname === "/contact" ||
     pathname === "/contact/thank-you" ||
-    pathname.startsWith("/contact/thank-you");
+    pathname.startsWith("/contact/thank-you") ||
+    pathname === "/support" ||
+    pathname === "/feedback";
 
   if (hidden) return null;
 

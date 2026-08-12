@@ -24,7 +24,18 @@ export interface Project {
   status: ProjectStatus;
   year: number;
   heroImage: string; // /public/work/<slug>.jpg
+  /**
+   * Extra App Store–style screenshots for the work feed. When present,
+   * ProjectBlock shows a horizontal phone gallery; heroImage stays the
+   * featured-card / OG thumbnail.
+   */
+  previewImages?: string[];
   liveUrl?: string;
+  /**
+   * Optional marketing / product site shown alongside an App Store (or other)
+   * download link — e.g. CyberSimply's store listing + cybersimply.com.
+   */
+  websiteUrl?: string;
   caseStudyUrl?: string; // internal /work/[slug]
   featured: boolean;
   category: "product" | "client";
@@ -43,6 +54,13 @@ export interface Project {
  */
 export function resolvedUrl(project: Project): string | undefined {
   return project.liveUrl?.startsWith("REPLACE") ? undefined : project.liveUrl;
+}
+
+/** Same REPLACE guard for the optional marketing-site URL. */
+export function resolvedWebsiteUrl(project: Project): string | undefined {
+  return project.websiteUrl?.startsWith("REPLACE")
+    ? undefined
+    : project.websiteUrl;
 }
 
 /**
@@ -74,7 +92,14 @@ export const projects: Project[] = [
     status: "live", // now shipping on the App Store
     year: 2026,
     heroImage: "/work/cybersimply.jpg",
+    previewImages: [
+      "/work/cybersimply/01-news.jpg",
+      "/work/cybersimply/02-article.jpg",
+      "/work/cybersimply/03-favorites.jpg",
+      "/work/cybersimply/04-archive.jpg",
+    ],
     liveUrl: "https://apps.apple.com/us/app/cyber-simply/id6752630267",
+    websiteUrl: "https://cybersimply.com",
     featured: true,
     category: "product",
     relatedServiceSlug: "mobile-apps",
