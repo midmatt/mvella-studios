@@ -21,7 +21,7 @@ export const profile: Profile = {
   name: "Matthew Vella",
 
   bio: [
-    "I'm a cybersecurity student at FIU's Honors College (minor in AI) with a CTE in cybersecurity, and I've been building software the whole way through. Three of my own apps are shipped and live, and I freelance for small businesses across the United States — marketing sites, storefronts, and mobile apps.",
+    "I'm a cybersecurity student at FIU's Honors College (minor in AI) with a cybersecurity degree from McFatter Technical College, and I've been building software the whole way through. Three of my own apps are shipped and live, and I freelance for small businesses across the United States — marketing sites, storefronts, and mobile apps.",
     "Most developers treat security as something you add at the end. I don't. Every project starts with the same questions I'd ask if I were the one attacking it: what's exposed, what's trusted, and what happens when something fails. I build software the way I'd want it secured.",
   ],
 
@@ -29,11 +29,15 @@ export const profile: Profile = {
 
   education: [
     "B.S. Cybersecurity, Minor in Artificial Intelligence — Florida International University, Honors College",
-    "CTE in Cybersecurity",
+    "Cybersecurity — McFatter Technical College",
   ],
 
-  // Left empty deliberately — see the note in components/About.tsx.
-  certifications: [],
+  // Competition / placement lines. Logo cards for these live in
+  // lib/credentials.ts — this array is the mono readout only.
+  certifications: [
+    "CyberPatriot National Youth Cyber Defense Competition — Platinum tier",
+    "Silver Knight Awards nominee — Vocational-Technical",
+  ],
 
   focus: [
     "Web development — Next.js, TypeScript",

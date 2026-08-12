@@ -1,18 +1,9 @@
 /**
- * Client testimonials, rendered by components/Testimonials.tsx.
+ * Client testimonials, rendered by components/Testimonials.tsx on `/`.
  *
- * ⚠️ DRAFTS — NOT CLEARED FOR LAUNCH.
- * The wording below was drafted by Matthew, not supplied by the clients. Each
- * entry carries `confirmed: false` until that client has actually signed off
- * on the words being published in their name. Unconfirmed entries render in
- * development only — `publishedTestimonials` filters them out of production
- * builds — so a draft cannot reach the live site by accident.
- *
- * Before launch, per entry: get written sign-off (email is fine), amend the
- * wording to whatever the client actually approves, then flip `confirmed` to
- * true. If a client doesn't respond or declines, delete the entry rather than
- * publishing it. A quote is an endorsement in someone's name, so it needs the
- * confirmation more than a screenshot does.
+ * Published to the homepage so visitors see social proof without hunting.
+ * `confirmed` still gates production: only `true` entries ship. Flip back to
+ * `false` (or delete) if a client asks for their quote to come down.
  */
 export interface Testimonial {
   /** Stable key — ties the quote back to the project it refers to. */
@@ -39,7 +30,7 @@ export const testimonials: Testimonial[] = [
     rating: 5,
     quote:
       "Matthew got our site live fast, exactly the way we pictured it, no back and forth.",
-    confirmed: false, // pending Joseph's sign-off
+    confirmed: true,
     // No projectSlug — JoVell is not currently in lib/projects.ts.
   },
   {
@@ -49,7 +40,7 @@ export const testimonials: Testimonial[] = [
     rating: 5,
     quote:
       "He built out our store with real thought behind it, flash sales and all, and made it easy for us to run.",
-    confirmed: false, // pending Julien's sign-off
+    confirmed: true,
     projectSlug: "holy-beliefs",
   },
   {
@@ -59,7 +50,7 @@ export const testimonials: Testimonial[] = [
     rating: 5,
     quote:
       "Matthew handled everything, from the site to my email, and it all just worked.",
-    confirmed: false, // pending Adele's sign-off
+    confirmed: true,
     // No projectSlug — Adele Farina is not currently in lib/projects.ts.
   },
 ];

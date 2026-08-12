@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import About from "@/components/About";
+import Credentials from "@/components/Credentials";
 import HiringForm from "@/components/HiringForm";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -54,6 +55,7 @@ export default function AboutPage() {
         />
       </div>
       <About />
+      <Credentials />
 
       <section
         id="writing"

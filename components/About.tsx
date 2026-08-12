@@ -12,11 +12,8 @@ import { profile } from "@/lib/profile";
  * panel-coloured placeholder, and a missing résumé hides the button rather
  * than shipping a link to a 404.
  *
- * NOTE: `profile.certifications` is intentionally empty. The spec's only
- * certification line was "working toward Security+", which was pulled from
- * the stats bar for reading tacky. If it belongs anywhere it's here, in the
- * quieter mono readout — say the word and I'll add it back as a CERTS row.
- * With the array empty the row is skipped entirely.
+ * Logo-backed qualifications (CyberPatriot, McFatter, …) live in a separate
+ * Credentials section so the mono CERTS row stays text-only.
  */
 function publicAssetExists(urlPath: string): boolean {
   try {

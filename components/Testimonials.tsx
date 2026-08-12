@@ -1,19 +1,14 @@
-import { publishedTestimonials, testimonials } from "@/lib/testimonials";
+import { publishedTestimonials } from "@/lib/testimonials";
 import StarRating from "./StarRating";
 
 /**
- * Testimonials — simple 3-card grid: name / company / star row / quote.
+ * Testimonials — simple card grid: name / company / star row / quote.
  *
- * Only entries that clear the placeholder check in lib/testimonials.ts are
- * shown in production, so unconfirmed drafts can't ship. In development the
- * drafts render too, marked as such, so the layout is reviewable before any
- * real quotes exist — which is why this section looked "missing" before.
+ * Reads only from `publishedTestimonials` so drafts (confirmed: false) never
+ * reach the homepage. The section is mounted on `/` — see app/page.tsx.
  */
-const isDev = process.env.NODE_ENV === "development";
-
 export default function Testimonials() {
-  const entries = isDev ? testimonials : publishedTestimonials;
-  if (entries.length === 0) return null;
+  if (publishedTestimonials.length === 0) return null;
 
   return (
     <section
@@ -28,7 +23,7 @@ export default function Testimonials() {
         </h2>
 
         <ul className="mt-14 grid gap-px bg-steel/40 md:grid-cols-3">
-          {entries.map((t) => (
+          {publishedTestimonials.map((t) => (
             <li
               key={t.slug}
               className="flex flex-col bg-panel p-8 transition-colors duration-300 hover:bg-panel-raised"
@@ -44,17 +39,6 @@ export default function Testimonials() {
             </li>
           ))}
         </ul>
-
-        {isDev && publishedTestimonials.length !== testimonials.length && (
-          <p className="mono-label mt-8 border border-steel/60 px-4 py-3 text-phosphor">
-            &gt; dev only — {testimonials.length - publishedTestimonials.length}{" "}
-            draft entr
-            {testimonials.length - publishedTestimonials.length === 1
-              ? "y is"
-              : "ies are"}{" "}
-            hidden in production until real quotes replace the placeholders
-          </p>
-        )}
       </div>
     </section>
   );
