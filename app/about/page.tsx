@@ -2,25 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import About from "@/components/About";
 import Credentials from "@/components/Credentials";
-import HiringForm from "@/components/HiringForm";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "About — MVella Studios",
   description:
-    "Matthew Vella — FIU Honors cybersecurity student and freelance developer building secure web and mobile software from South Florida.",
+    "Matthew Vella — founder of MVella Studios. Security-minded freelance web and mobile development for small businesses, from South Florida.",
 };
 
 /**
  * Placeholder writing list. Add real posts here as `{ title, date, url }`
  * and they render automatically; leave it empty and the section shows its
- * empty state. Deliberately not an MDX/blog system yet — this is just the
- * seam where one would go.
- *
- * Example entry:
- *   { title: "Hardening a Next.js contact form", date: "2026-09-14", url: "/writing/hardening-contact-forms" }
- *
- * `date` is ISO (YYYY-MM-DD); `url` can be internal or external.
+ * empty state.
  */
 interface Post {
   title: string;
@@ -30,7 +23,6 @@ interface Post {
 
 const posts: Post[] = [];
 
-/** Formatted in UTC so the rendered date can't drift by timezone. */
 function formatDate(iso: string): string {
   const parsed = new Date(`${iso}T00:00:00Z`);
   if (Number.isNaN(parsed.getTime())) return iso;
@@ -44,7 +36,6 @@ function formatDate(iso: string): string {
 
 export default function AboutPage() {
   return (
-    /* Clears the fixed 4rem nav */
     <div className="pt-16">
       <div className="mx-auto max-w-6xl px-6 pt-10">
         <Breadcrumbs
@@ -124,8 +115,6 @@ export default function AboutPage() {
           </p>
         </div>
       </section>
-
-      <HiringForm />
     </div>
   );
 }

@@ -40,7 +40,7 @@ export const credentials: Credential[] = [
   {
     slug: "cyberpatriot-platinum",
     name: "CyberPatriot",
-    caption: "National Youth Cyber Defense Competition — Platinum tier",
+    caption: "National Youth Cyber Defense Competition — Platinum tier, Linux Team Lead",
     logo: "/credentials/cyberpatriot.png",
     width: 276,
     height: 276,

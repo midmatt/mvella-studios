@@ -39,6 +39,12 @@ export default function Footer() {
               {DIRECT_EMAIL}
             </a>
             <Link
+              href="/hiring"
+              className="mono-label text-paper/70 transition-colors hover:text-phosphor"
+            >
+              Hiring
+            </Link>
+            <Link
               href="/support"
               className="mono-label text-paper/70 transition-colors hover:text-phosphor"
             >

@@ -60,6 +60,8 @@ const schema = z.object({
   // Hiring form fields — present only on /about employment submissions
   company: z.string().trim().max(200).optional(),
   role: z.string().trim().max(200).optional(),
+  /** Which resume track the recruiter selected: SWE vs Security. */
+  careerTrack: z.enum(["software", "security"]).optional(),
 
   // Quote-builder fields — present only on /services submissions
   packageType: z.string().max(100).optional(),
@@ -136,11 +138,18 @@ function quoteBreakdown(data: Submission): string {
 }
 
 function notificationText(data: Submission): string {
+  const trackLabel =
+    data.careerTrack === "security"
+      ? "Security Engineering"
+      : data.careerTrack === "software"
+        ? "Software Engineering"
+        : undefined;
   const parts = [
     `NAME      ${data.name}`,
     `EMAIL     ${data.email}`,
     ...(data.company ? [`COMPANY   ${data.company}`] : []),
     ...(data.role ? [`ROLE      ${data.role}`] : []),
+    ...(trackLabel ? [`TRACK     ${trackLabel}`] : []),
     ...(data.projectType ? [`TYPE      ${data.projectType}`] : []),
     ...(data.budget ? [`BUDGET    ${data.budget}`] : []),
   ];
@@ -182,6 +191,12 @@ function quoteBreakdownHtmlLines(data: Submission): string[] {
 }
 
 function notificationHtml(data: Submission): string {
+  const trackLabel =
+    data.careerTrack === "security"
+      ? "Security Engineering"
+      : data.careerTrack === "software"
+        ? "Software Engineering"
+        : undefined;
   const blocks: EmailBlock[] = [
     {
       kind: "rows",
@@ -190,6 +205,7 @@ function notificationHtml(data: Submission): string {
         ["EMAIL", link(`mailto:${esc(data.email)}`, esc(data.email))],
         ...(data.company ? [["COMPANY", esc(data.company)] as [string, string]] : []),
         ...(data.role ? [["ROLE", esc(data.role)] as [string, string]] : []),
+        ...(trackLabel ? [["TRACK", esc(trackLabel)] as [string, string]] : []),
         ...(data.projectType ? [["TYPE", esc(data.projectType)] as [string, string]] : []),
         ...(data.budget ? [["BUDGET", esc(data.budget)] as [string, string]] : []),
       ],
@@ -306,7 +322,13 @@ export async function POST(request: Request) {
    * reads as another project quote in the inbox.
    */
   const subject = isEmployment(data)
-    ? `[HIRING] ${data.role || "Full-time role"} — ${data.name}${
+    ? `[HIRING${
+        data.careerTrack === "security"
+          ? " · SEC"
+          : data.careerTrack === "software"
+            ? " · SWE"
+            : ""
+      }] ${data.role || "Internship"} — ${data.name}${
         data.company ? ` · ${data.company}` : ""
       }`
     : isQuote(data)

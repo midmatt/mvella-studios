@@ -1,19 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import Image from "next/image";
+import Link from "next/link";
 import { profile } from "@/lib/profile";
 
 /**
- * About (spec §4) — two columns on desktop: mono system readout + bio + links
- * on the left, photo on the right. Stacks on mobile with the photo kept
- * (scaled down), unlike the hero.
- *
- * Asset presence is resolved at build time: a missing photo falls back to a
- * panel-coloured placeholder, and a missing résumé hides the button rather
- * than shipping a link to a 404.
- *
- * Logo-backed qualifications (CyberPatriot, McFatter, …) live in a separate
- * Credentials section so the mono CERTS row stays text-only.
+ * Client-facing About — written for people hiring the studio, not for
+ * recruiters. Internship / resume material lives on /hiring.
  */
 function publicAssetExists(urlPath: string): boolean {
   try {
@@ -24,9 +17,9 @@ function publicAssetExists(urlPath: string): boolean {
 }
 
 const readoutRows: Array<[string, string[]]> = [
-  ["EDUCATION", profile.education],
-  ["CERTS", profile.certifications],
-  ["FOCUS", profile.focus],
+  ["BACKGROUND", profile.background],
+  ["BUILDS", profile.builds],
+  ["APPROACH", profile.approach],
 ];
 
 const socialIcons: Record<string, string> = {
@@ -38,9 +31,6 @@ const socialIcons: Record<string, string> = {
 
 export default function About() {
   const hasPhoto = publicAssetExists(profile.photo);
-  const hasResume = Boolean(
-    profile.resumeUrl && publicAssetExists(profile.resumeUrl)
-  );
 
   const socials = [
     { label: "LinkedIn", href: profile.linkedinUrl },
@@ -55,36 +45,34 @@ export default function About() {
     >
       <div className="mx-auto max-w-6xl px-6 pb-24 pt-8 md:pt-12">
         <p className="mono-label text-phosphor">&gt; whoami --verbose</p>
-        {/* h1: About owns the /about page, which had no top-level heading.
-            Already styled at h2 size, so this is semantics only. */}
         <h1 className="mt-4 font-display text-h2 text-paper">
           {profile.name}
         </h1>
+        <p className="mono-label mt-3 text-paper/50">
+          Founder, MVella Studios · {profile.location}
+        </p>
 
         <div className="mt-14 grid gap-12 md:grid-cols-[1fr_minmax(0,22rem)] md:gap-16">
-          {/* Left — system readout, bio, links */}
           <div className="order-2 md:order-1">
             <dl className="border-y border-steel/40 py-6">
-              {readoutRows.map(([label, values]) =>
-                values.length === 0 ? null : (
-                  <div
-                    key={label}
-                    className="grid gap-1 py-2.5 sm:grid-cols-[7rem_1fr] sm:gap-4"
-                  >
-                    <dt className="mono-label text-paper/50">{label}</dt>
-                    <dd className="space-y-1">
-                      {values.map((value) => (
-                        <p
-                          key={value}
-                          className="font-mono text-label uppercase text-paper/80"
-                        >
-                          {value}
-                        </p>
-                      ))}
-                    </dd>
-                  </div>
-                )
-              )}
+              {readoutRows.map(([label, values]) => (
+                <div
+                  key={label}
+                  className="grid gap-1 py-2.5 sm:grid-cols-[7rem_1fr] sm:gap-4"
+                >
+                  <dt className="mono-label text-paper/50">{label}</dt>
+                  <dd className="space-y-1">
+                    {values.map((value) => (
+                      <p
+                        key={value}
+                        className="font-mono text-label uppercase text-paper/80"
+                      >
+                        {value}
+                      </p>
+                    ))}
+                  </dd>
+                </div>
+              ))}
             </dl>
 
             <div className="mt-8 max-w-xl space-y-5">
@@ -96,17 +84,18 @@ export default function About() {
             </div>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              {/* Hidden entirely when /public/resume.pdf is absent */}
-              {hasResume && (
-                <a
-                  href={profile.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mono-label border border-phosphor px-5 py-3 text-phosphor transition-colors hover:bg-phosphor hover:text-ink"
-                >
-                  Download Resume
-                </a>
-              )}
+              <Link
+                href="/contact"
+                className="mono-label border border-phosphor px-5 py-3 text-phosphor transition-colors hover:bg-phosphor hover:text-ink"
+              >
+                Start a project
+              </Link>
+              <Link
+                href="/services#quote-builder"
+                className="mono-label border border-steel px-5 py-3 text-paper transition-colors hover:border-phosphor hover:text-phosphor"
+              >
+                Get a quote
+              </Link>
 
               {socials.map((social) => (
                 <a
@@ -129,9 +118,20 @@ export default function About() {
                 </a>
               ))}
             </div>
+
+            <p className="mt-10 max-w-xl text-[0.8125rem] leading-relaxed text-paper/45">
+              Recruiters and hiring managers looking for internship materials
+              can find the full packet on the{" "}
+              <Link
+                href="/hiring"
+                className="text-paper/70 underline-offset-4 hover:text-phosphor hover:underline"
+              >
+                hiring page
+              </Link>
+              .
+            </p>
           </div>
 
-          {/* Right — photo, full color inside a phosphor keyline */}
           <div className="order-1 md:order-2">
             <div className="mx-auto max-w-[15rem] border border-phosphor p-3 sm:max-w-[18rem] md:max-w-none md:p-4">
               <div className="relative aspect-[4/5] w-full bg-panel">
@@ -154,12 +154,11 @@ export default function About() {
             </div>
 
             <p className="mono-label mt-4 text-center text-paper/40 md:text-left">
-              Based in South Florida
+              Based in {profile.location}
             </p>
           </div>
         </div>
       </div>
-
     </section>
   );
 }
