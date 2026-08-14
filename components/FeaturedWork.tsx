@@ -53,15 +53,20 @@ function Card({ project }: { project: (typeof projects)[number] }) {
         )}
       </div>
 
-      <div className="p-8">
-        <p className="mono-label text-paper/50">
-          <span aria-hidden="true" className="mr-1.5 text-phosphor">
-            ●
-          </span>
+      <div className="relative p-8">
+        <p className="eyebrow text-phosphor">
           {STATUS_LABEL[project.status] ?? project.status} · {project.year}
         </p>
         <h3 className="mt-4 font-display text-h3 text-paper">{project.name}</h3>
-        <p className="mt-3 text-body text-paper/70">{project.tagline}</p>
+        <p className="mt-3 pr-10 text-body text-paper/70">{project.tagline}</p>
+        <span
+          aria-hidden="true"
+          className="absolute bottom-8 right-8 flex h-9 w-9 items-center justify-center border border-steel text-paper/50 transition-colors duration-300 group-hover:border-phosphor group-hover:bg-phosphor group-hover:text-ink"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M7 17 17 7M9 7h8v8" />
+          </svg>
+        </span>
       </div>
     </li>
   );
@@ -78,22 +83,30 @@ export default function FeaturedWork() {
       className="border-t border-steel/40 bg-ink"
     >
       <div className="mx-auto max-w-6xl px-6 py-24">
-        <p className="mono-label text-phosphor">&gt; ls ./work --featured</p>
-        <h2 className="mt-4 font-display text-h2 text-paper">Featured work</h2>
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="eyebrow eyebrow--slash">Featured projects</p>
+            <h2 className="mt-4 font-display text-h2 uppercase text-paper">
+              Selected work<span className="text-phosphor">.</span>
+            </h2>
+          </div>
+          <Link
+            href="/work"
+            className="mono-label inline-flex items-center gap-2 border border-steel px-5 py-3 text-paper transition-colors hover:border-phosphor hover:text-phosphor"
+          >
+            View All Projects
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M7 17 17 7M9 7h8v8" />
+            </svg>
+          </Link>
+        </div>
 
         {/* gap-px over a steel wash = hairline divider grid */}
-        <ul className="mt-14 grid gap-px bg-steel/40 md:grid-cols-2">
+        <ul className="mt-14 grid gap-px overflow-hidden border border-steel/40 bg-steel/40 md:grid-cols-2">
           {featured.map((project) => (
             <Card key={project.slug} project={project} />
           ))}
         </ul>
-
-        <Link
-          href="/work"
-          className="mono-label mt-10 inline-block border border-steel px-5 py-3 text-paper transition-colors hover:border-phosphor hover:text-phosphor"
-        >
-          View All Work &rarr;
-        </Link>
       </div>
     </section>
   );

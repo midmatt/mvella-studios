@@ -13,9 +13,9 @@ export default function HiringTeaser() {
       className="border-t border-steel/40 bg-ink"
     >
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
-        <p className="mono-label text-phosphor">&gt; cat ./availability</p>
-        <h2 className="mt-4 max-w-2xl font-display text-h2 text-paper">
-          Open to full-time roles
+        <p className="eyebrow eyebrow--slash">Availability</p>
+        <h2 className="mt-4 max-w-2xl font-display text-h2 uppercase text-paper">
+          Open to full-time roles<span className="text-phosphor">.</span>
         </h2>
         <p className="mt-6 max-w-2xl text-body text-paper/70">
           Freelance is the day job, but I&rsquo;m also looking at Software

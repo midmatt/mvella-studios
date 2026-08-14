@@ -34,12 +34,15 @@ export default function Nav() {
           />
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
+        <nav
+          aria-label="Primary"
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex"
+        >
           {links.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="mono-label text-paper/70 transition-colors hover:text-paper"
+              className="mono-label text-paper/70 transition-colors hover:text-phosphor"
             >
               {link.label}
             </Link>
@@ -49,9 +52,9 @@ export default function Nav() {
         <div className="flex items-center gap-3">
           <Link
             href={QUOTE_HREF}
-            className="mono-label border border-phosphor px-4 py-2 text-phosphor transition-colors hover:bg-phosphor hover:text-ink"
+            className="mono-label hidden bg-phosphor px-5 py-2.5 text-ink transition-colors hover:bg-paper sm:inline-block"
           >
-            &gt;&nbsp;get a quote
+            Let&rsquo;s Talk
           </Link>
 
           <button

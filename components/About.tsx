@@ -44,9 +44,9 @@ export default function About() {
       className="border-t border-steel/40 bg-ink"
     >
       <div className="mx-auto max-w-6xl px-6 pb-24 pt-8 md:pt-12">
-        <p className="mono-label text-phosphor">&gt; whoami --verbose</p>
-        <h1 className="mt-4 font-display text-h2 text-paper">
-          {profile.name}
+        <p className="eyebrow eyebrow--slash">About me</p>
+        <h1 className="mt-4 font-display text-h2 uppercase text-paper">
+          {profile.name}<span className="text-phosphor">.</span>
         </h1>
         <p className="mono-label mt-3 text-paper/50">
           Founder, MVella Studios · {profile.location}

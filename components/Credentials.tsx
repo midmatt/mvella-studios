@@ -169,9 +169,9 @@ export default function Credentials() {
       <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="mono-label text-phosphor">&gt; ls ./credentials</p>
-            <h2 className="mt-2 font-display text-xl text-paper sm:text-2xl">
-              Qualifications
+            <p className="eyebrow eyebrow--slash">Credentials</p>
+            <h2 className="mt-2 font-display text-xl uppercase text-paper sm:text-2xl">
+              Qualifications<span className="text-phosphor">.</span>
             </h2>
           </div>
 

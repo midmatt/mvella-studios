@@ -45,6 +45,40 @@
   }
 
   /*
+    Redesign motif (agency-portrait reference): a mono eyebrow trailed by
+    hairline accent slashes. Carried across every section as the recurring
+    "chapter marker." Slashes are decorative and hidden from assistive tech.
+  */
+  .eyebrow {
+    @apply font-mono text-label uppercase tracking-[0.18em] text-phosphor;
+  }
+
+  .eyebrow--slash::after {
+    content: "//////";
+    @apply ml-3 text-phosphor/40;
+  }
+
+  /*
+    Diagonal accent corner clipped into a card's bottom-right — the reference's
+    orange triangle, in phosphor. Purely decorative.
+  */
+  .accent-corner {
+    @apply relative;
+  }
+
+  .accent-corner::after {
+    content: "";
+    @apply pointer-events-none absolute bottom-0 right-0 h-7 w-7 bg-phosphor;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  }
+
+  /* Sheared accent bar used as a headline underscore / section flourish. */
+  .accent-shear {
+    @apply inline-block bg-phosphor;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  }
+
+  /*
     Long-form legal copy. Deliberately outside the site's terminal voice —
     no mono, no phosphor eyebrows, no case-file framing. Measure is capped
     near 68ch and contrast runs higher than marketing body copy (paper/80

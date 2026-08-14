@@ -17,16 +17,16 @@ export default function Testimonials() {
       className="border-t border-steel/40 bg-ink"
     >
       <div className="mx-auto max-w-6xl px-6 py-24">
-        <p className="mono-label text-phosphor">&gt; cat ./testimonials</p>
-        <h2 className="mt-4 font-display text-h2 text-paper">
-          What clients say
+        <p className="eyebrow eyebrow--slash">Testimonials</p>
+        <h2 className="mt-4 font-display text-h2 uppercase text-paper">
+          What clients say<span className="text-phosphor">.</span>
         </h2>
 
-        <ul className="mt-14 grid gap-px bg-steel/40 md:grid-cols-3">
+        <ul className="mt-14 grid gap-px overflow-hidden border border-steel/40 bg-steel/40 md:grid-cols-3">
           {publishedTestimonials.map((t) => (
             <li
               key={t.slug}
-              className="flex flex-col bg-panel p-8 transition-colors duration-300 hover:bg-panel-raised"
+              className="accent-corner flex flex-col bg-panel p-8 transition-colors duration-300 hover:bg-panel-raised"
             >
               <StarRating rating={t.rating} />
               <blockquote className="mt-6 flex-1 text-body text-paper/80">
