@@ -11,7 +11,11 @@ export const displayFont = localFont({
     { path: "./fonts/GeneralSans-Bold.woff2", weight: "700", style: "normal" },
   ],
   variable: "--font-display",
-  display: "swap",
+  // Headline is the lab LCP element (portrait often loses to HTML text on
+  // mobile). Don't preload or swap this face on the critical path — optional
+  // + no preload lets the h1 paint at FCP instead of waiting ~2s for woff2.
+  display: "optional",
+  preload: false,
 });
 
 export const bodyFont = Inter({

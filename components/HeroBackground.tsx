@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 
 /**
@@ -139,9 +139,100 @@ function seedLayer(layer: Layer): Node[] {
   });
 }
 
+/**
+ * Static CSS stand-in for the canvas gradient. Always in the first paint so
+ * mobile never pays for an 82-node rAF loop before LCP. The live canvas only
+ * mounts at `lg` after LCP / idle — see HeroBackground below.
+ */
+function StaticField() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_42%,#17170F_0%,#101010_55%,#0B0B0A_100%)]"
+    />
+  );
+}
+
+const DESKTOP_MQ = "(min-width: 1024px)";
+
+/**
+ * Hero node-field. Canvas is desktop-only and deferred until LCP (or idle)
+ * so it cannot steal frames from the portrait. Reduced-motion skips it.
+ */
 export default function HeroBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduceMotion = useReducedMotion();
+  const [mountCanvas, setMountCanvas] = useState(false);
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    const mq = window.matchMedia(DESKTOP_MQ);
+    let idleId = 0;
+    let timeoutId = 0;
+    let observer: PerformanceObserver | null = null;
+    let armed = false;
+
+    const go = () => {
+      if (armed || !mq.matches) return;
+      armed = true;
+      setMountCanvas(true);
+    };
+
+    const disarm = () => {
+      if (idleId) {
+        cancelIdleCallback(idleId);
+        idleId = 0;
+      }
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+        timeoutId = 0;
+      }
+      observer?.disconnect();
+      observer = null;
+    };
+
+    const arm = () => {
+      disarm();
+      armed = false;
+      if (!mq.matches) {
+        setMountCanvas(false);
+        return;
+      }
+
+      try {
+        observer = new PerformanceObserver((list) => {
+          if (list.getEntries().length) go();
+        });
+        observer.observe({ type: "largest-contentful-paint", buffered: true });
+      } catch {
+        /* Safari / reduced PerformanceObserver support */
+      }
+
+      if (typeof requestIdleCallback === "function") {
+        idleId = requestIdleCallback(go, { timeout: 1200 });
+      } else {
+        timeoutId = window.setTimeout(go, 400);
+      }
+    };
+
+    arm();
+    mq.addEventListener("change", arm);
+    return () => {
+      mq.removeEventListener("change", arm);
+      disarm();
+    };
+  }, [reduceMotion]);
+
+  return (
+    <>
+      <StaticField />
+      {mountCanvas ? <HeroCanvas /> : null}
+    </>
+  );
+}
+
+function HeroCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -363,21 +454,15 @@ export default function HeroBackground() {
 
     resize();
     window.addEventListener("resize", resize);
-
-    if (reduceMotion) {
-      // Frozen: one static frame, parallax pinned to 0,0, no listener, no RAF.
-      draw();
-    } else {
-      window.addEventListener("mousemove", onMouseMove);
-      frame = requestAnimationFrame(step);
-    }
+    window.addEventListener("mousemove", onMouseMove);
+    frame = requestAnimationFrame(step);
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouseMove);
     };
-  }, [reduceMotion]);
+  }, []);
 
   return (
     <canvas

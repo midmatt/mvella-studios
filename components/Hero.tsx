@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -12,17 +11,25 @@ const TYPE_SPEED_MS = 55;
 const START_DELAY_MS = 400;
 
 /**
- * Redesigned hero (agency-portrait reference): a slashed mono eyebrow that
- * types itself out once, a bold uppercase headline with a single accent word
- * and trailing accent period, subhead, CTAs, and a socials row on the left;
- * the cut-out portrait framed by angular phosphor shapes and a rotating
- * availability badge on the right.
+ * Hero — copy and CTAs paint immediately; the portrait is never hidden
+ * behind an opacity-0 motion wrapper (that was the 4.85s LCP render delay).
  *
- * Reduced motion: no typing, no rise — simple fades only.
+ * Mobile: copy first, compact portrait, no min-h-svh — so the two CTAs land
+ * in the first viewport at 375×667. Desktop keeps the two-column agency layout.
+ *
+ * The typewriter only drives the eyebrow; it does not gate headline or CTAs.
  */
 export default function Hero() {
-  const reduceMotion = useReducedMotion();
   const [typed, setTyped] = useState("");
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduceMotion(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     if (reduceMotion) {
@@ -46,26 +53,18 @@ export default function Hero() {
     };
   }, [reduceMotion]);
 
-  const rise = reduceMotion ? 0 : 16;
-  const reveal = {
-    hidden: { opacity: 0, y: rise },
-    show: { opacity: 1, y: 0 },
-  };
-
   return (
-    <section className="relative flex min-h-svh items-center overflow-hidden pt-16">
+    <section className="relative overflow-hidden pt-16 lg:flex lg:min-h-svh lg:items-center">
       <HeroBackground />
-      {/* Fade the node field out into the stats bar below */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-ink"
       />
 
-      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 py-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:py-20">
-        {/* ── Left column ─────────────────────────────────────────── */}
-        <div className="order-2 lg:order-1">
-          {/* Eyebrow — typed once on load, trailed by hairline slashes. */}
-          <p className="eyebrow mb-6 flex h-5 items-center">
+      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-5 px-6 py-5 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:py-20">
+        {/* Copy first on every breakpoint so mobile CTAs are above the fold. */}
+        <div>
+          <p className="eyebrow mb-3 flex h-5 items-center lg:mb-6">
             <span className="sr-only">{EYEBROW}</span>
             <span aria-hidden="true">
               {typed}
@@ -76,111 +75,78 @@ export default function Hero() {
             </span>
           </p>
 
-          <motion.h1
-            className="max-w-2xl font-display text-display uppercase leading-[0.95] text-paper"
-            variants={reveal}
-            initial="hidden"
-            animate="show"
-            transition={{ duration: 0.6, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <h1 className="max-w-2xl font-display text-[clamp(2.25rem,8vw,6rem)] uppercase leading-[0.95] text-paper lg:text-display">
             I build digital
             <br />
             <span className="text-phosphor">products</span>
             <span className="text-phosphor">.</span>
-          </motion.h1>
+          </h1>
 
-          <motion.div
-            variants={{
-              hidden: {},
-              show: { transition: { staggerChildren: 0.12, delayChildren: 1.15 } },
-            }}
-            initial="hidden"
-            animate="show"
-          >
-            <motion.p
-              variants={reveal}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="mt-7 max-w-md text-body text-paper/70"
-            >
-              Freelance web and mobile development from a cybersecurity student
-              who ships fast — without cutting corners on security.
-            </motion.p>
+          <p className="mt-3 max-w-md text-[0.9375rem] leading-snug text-paper/70 lg:mt-7 lg:text-body lg:leading-relaxed">
+            Freelance web and mobile development from a cybersecurity student
+            who ships fast — without cutting corners on security.
+          </p>
 
-            <motion.div
-              variants={reveal}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="mt-8 flex flex-wrap items-center gap-4"
+          <div className="mt-4 flex flex-wrap items-center gap-2 lg:mt-8 lg:gap-4">
+            <Link
+              href="/contact"
+              className="mono-label bg-phosphor px-4 py-2.5 text-ink transition-colors hover:bg-paper lg:px-6 lg:py-3"
             >
-              <Link
+              Start a Project&nbsp;&rarr;
+            </Link>
+            <Link
+              href="/work"
+              className="mono-label border border-steel px-4 py-2.5 text-paper transition-colors hover:border-phosphor hover:text-phosphor lg:px-6 lg:py-3"
+            >
+              View My Work
+            </Link>
+          </div>
+
+          <div className="mt-5 hidden items-center gap-5 sm:flex lg:mt-10">
+            <span className="mono-label text-paper/40">Find me on</span>
+            <div className="flex items-center gap-4 text-paper/60">
+              <a
+                href="https://github.com/midmatt"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="transition-colors hover:text-phosphor"
+              >
+                <GithubIcon />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/matthew-vella-234189326/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="transition-colors hover:text-phosphor"
+              >
+                <LinkedinIcon />
+              </a>
+              <a
+                href="https://www.instagram.com/matt_ve11a"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="transition-colors hover:text-phosphor"
+              >
+                <InstagramIcon />
+              </a>
+              <a
                 href="/contact"
-                className="mono-label bg-phosphor px-6 py-3 text-ink transition-colors hover:bg-paper"
+                aria-label="Email"
+                className="transition-colors hover:text-phosphor"
               >
-                Start a Project&nbsp;&rarr;
-              </Link>
-              <Link
-                href="/work"
-                className="mono-label border border-steel px-6 py-3 text-paper transition-colors hover:border-phosphor hover:text-phosphor"
-              >
-                View My Work
-              </Link>
-            </motion.div>
-
-            {/* Socials row — the reference's "FIND ME ON" strip. */}
-            <motion.div
-              variants={reveal}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="mt-10 flex items-center gap-5"
-            >
-              <span className="mono-label text-paper/40">Find me on</span>
-              <div className="flex items-center gap-4 text-paper/60">
-                <a
-                  href="https://github.com/midmatt"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub"
-                  className="transition-colors hover:text-phosphor"
-                >
-                  <GithubIcon />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/matthew-vella-234189326/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="transition-colors hover:text-phosphor"
-                >
-                  <LinkedinIcon />
-                </a>
-                <a
-                  href="https://www.instagram.com/matt_ve11a"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="transition-colors hover:text-phosphor"
-                >
-                  <InstagramIcon />
-                </a>
-                <a
-                  href="/contact"
-                  aria-label="Email"
-                  className="transition-colors hover:text-phosphor"
-                >
-                  <MailIcon />
-                </a>
-              </div>
-            </motion.div>
-          </motion.div>
+                <MailIcon />
+              </a>
+            </div>
+          </div>
         </div>
 
-        {/* ── Right column: portrait ──────────────────────────────── */}
-        <motion.div
-          className="relative order-1 mx-auto w-full max-w-sm lg:order-2 lg:max-w-none"
-          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="relative aspect-[3/4] w-full">
-            {/* Angular phosphor accent shapes behind the subject. */}
+        {/* Portrait paints at opacity 1. Compact on mobile so it stays in-viewport
+            without pushing CTAs below the fold; full agency frame from lg up. */}
+        <div className="relative mx-auto h-56 w-[10.5rem] lg:h-auto lg:w-full lg:max-w-none">
+          <div className="relative h-full w-full lg:aspect-[3/4]">
             <div
               aria-hidden="true"
               className="absolute right-[6%] top-[8%] h-[70%] w-[62%] bg-phosphor"
@@ -191,7 +157,6 @@ export default function Hero() {
               className="absolute right-[2%] top-[4%] h-[52%] w-[34%] border border-phosphor/40"
               style={{ clipPath: "polygon(30% 0, 100% 0, 70% 100%, 0 100%)" }}
             />
-            {/* Soft radial base so the cut-out doesn't float on pure ink. */}
             <div
               aria-hidden="true"
               className="absolute inset-x-[8%] bottom-0 h-[60%] rounded-[50%] bg-phosphor/10 blur-2xl"
@@ -202,22 +167,21 @@ export default function Hero() {
               alt="Matthew Vella"
               fill
               priority
-              sizes="(min-width: 1024px) 480px, 384px"
+              fetchPriority="high"
+              sizes="(min-width: 1024px) 480px, 168px"
               className="relative object-contain object-bottom drop-shadow-[0_25px_45px_rgba(0,0,0,0.55)]"
             />
 
-            {/* Rotating availability badge, bottom-left of the portrait. */}
-            <div className="absolute -bottom-2 left-0 lg:-left-6">
+            <div className="absolute -bottom-2 left-0 hidden lg:-left-6 lg:block">
               <AvailabilityBadge />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ── Inline social icons (currentColor, 20px) ───────────────────── */
 function GithubIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

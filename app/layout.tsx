@@ -77,13 +77,16 @@ export default function RootLayout({
             ever changes, change both. */}
         <Analytics />
         {/* Shared gtag.js — one library load, then config for Google Ads
-            (AW-…) and GA4 (G-…). Conversion events still fire from
-            ContactForm after a successful /api/contact response. */}
+            (AW-…) and GA4 (G-…). Uses lazyOnload (fires after window.onload +
+            idle) to avoid the <link rel="preload"> that afterInteractive emits,
+            which competes with Hero LCP. Safe for conversions because form
+            submit happens seconds later and trackGoogleAdsConversion() retries
+            for up to 3 s if gtag isn't ready yet. */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-gtag" strategy="afterInteractive">
+        <Script id="google-gtag" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}

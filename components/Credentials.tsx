@@ -156,7 +156,7 @@ export default function Credentials() {
     <section
       id="credentials"
       aria-label="Qualifications"
-      className="border-t border-steel/40 bg-ink"
+      className="overflow-x-clip border-t border-steel/40 bg-ink"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocusCapture={() => setHovered(true)}
