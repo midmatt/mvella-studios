@@ -4,11 +4,11 @@ import { LEGAL_EMAIL } from "@/lib/contact";
 
 /**
  * Transcribed from legal-privacy-policy.md, all REPLACE markers resolved to
- * what Matthew confirmed on 2026-08-07: effective date Aug 7 2026, Vercel
- * Web Analytics (installed in app/layout.tsx the same day — the section
- * describes what actually runs), and agreement-record retention of
- * engagement + 5 years (chosen to outlast Florida's 5-year statute of
- * limitations on written contracts).
+ * what Matthew confirmed on 2026-08-07: Vercel Web Analytics, Google Ads,
+ * and (as of Aug 14 2026) Google Analytics 4 — all installed in
+ * app/layout.tsx; this section describes what actually runs — and
+ * agreement-record retention of engagement + 5 years (chosen to outlast
+ * Florida's 5-year statute of limitations on written contracts).
  *
  * The source's author-facing instruction sentence ("fix the copy to match
  * reality before publishing") was removed in this finalization pass — it
@@ -24,7 +24,7 @@ export default function LegalPage() {
   return (
     <LegalDocument
       title="Legal &amp; Privacy"
-      meta="Effective date: August 7, 2026"
+      meta="Effective date: August 14, 2026"
     >
       <p>
         This page explains what information MVella Studios (&ldquo;we,&rdquo;
@@ -62,13 +62,19 @@ export default function LegalPage() {
         identifiers are anonymized and discarded daily.
       </p>
       <p>
-        This site also loads the Google Ads (gtag) tag to measure advertising
-        performance. When you successfully submit the contact form, a
-        conversion event may be sent to Google Ads. Google may set or read
-        cookies and process device and interaction data under its own privacy
-        policy. Beyond that, the only automatic collection is what&rsquo;s
-        strictly necessary for hosting to function (standard server request
-        logs).
+        This site also uses Google Analytics 4 (GA4) via the same gtag
+        library as Google Ads. GA4 collects page views, referrers, and
+        device, browser, and approximate location data so we can understand
+        how the site is used. Google may set or read cookies and process this
+        data under its own privacy policy.
+      </p>
+      <p>
+        Google Ads (gtag) is used to measure advertising performance. When
+        you successfully submit the contact form, a conversion event may be
+        sent to Google Ads. Google may set or read cookies and process
+        device and interaction data under its own privacy policy. Beyond
+        that, the only automatic collection is what&rsquo;s strictly
+        necessary for hosting to function (standard server request logs).
       </p>
 
       <h2>How We Use This Information</h2>
@@ -76,8 +82,7 @@ export default function LegalPage() {
         <li>To respond to inquiries and prepare quotes</li>
         <li>To deliver and administer signed Service Agreements</li>
         <li>
-          To improve the site (only if analytics are actually in use — see
-          above)
+          To improve the site (Vercel Web Analytics and Google Analytics 4)
         </li>
         <li>
           To measure whether Google Ads led to a contact-form submission
@@ -109,6 +114,10 @@ export default function LegalPage() {
         <li>
           <strong>Google Ads</strong> — measures ad conversions from the
           contact form (gtag).
+        </li>
+        <li>
+          <strong>Google Analytics</strong> — measures site usage via GA4
+          (gtag).
         </li>
       </ul>
       <p>

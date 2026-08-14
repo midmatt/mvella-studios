@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import StickyMobileCta from "@/components/StickyMobileCta";
 import { GOOGLE_ADS_ID } from "@/lib/google-ads";
+import { GOOGLE_ANALYTICS_ID } from "@/lib/google-analytics";
 import { profile } from "@/lib/profile";
 import { SITE_ORIGIN, STUDIO_AREA, STUDIO_NAME } from "@/lib/site";
 import "./globals.css";
@@ -75,19 +76,20 @@ export default function RootLayout({
             privacy policy at /legal describes exactly this; if analytics
             ever changes, change both. */}
         <Analytics />
-        {/* Google Ads base tag — conversion events fire from ContactForm
-            after a successful /api/contact response. Prefer the thank-you
-            page once Ads is pointed at /contact/thank-you. */}
+        {/* Shared gtag.js — one library load, then config for Google Ads
+            (AW-…) and GA4 (G-…). Conversion events still fire from
+            ContactForm after a successful /api/contact response. */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
           strategy="afterInteractive"
         />
-        <Script id="google-ads-gtag" strategy="afterInteractive">
+        <Script id="google-gtag" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GOOGLE_ADS_ID}');
+            gtag('config', '${GOOGLE_ANALYTICS_ID}');
           `}
         </Script>
       </body>

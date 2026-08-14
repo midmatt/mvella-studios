@@ -1,8 +1,9 @@
 /**
  * Google Ads conversion tracking.
  *
- * Base tag (AW-…) loads in app/layout.tsx. ContactForm and QuoteBuilder call
- * trackGoogleAdsConversion() only after /api/contact returns OK.
+ * Base tag (AW-…) shares gtag.js with GA4 in app/layout.tsx. ContactForm and
+ * QuoteBuilder call trackGoogleAdsConversion() only after /api/contact
+ * returns OK.
  *
  * Conversion label comes from Google Ads → Goals → Conversions → the
  * conversion action → Tag setup. It looks like a short token after the slash
