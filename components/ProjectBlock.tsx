@@ -6,8 +6,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import {
   isAppStoreProject,
+  projectCtas,
   resolvedUrl,
-  resolvedWebsiteUrl,
   type Project,
 } from "@/lib/projects";
 import { services } from "@/lib/services";
@@ -15,12 +15,6 @@ import CaseFileReadout from "./CaseFileReadout";
 import StarRating, { averageRating } from "./StarRating";
 import DeviceFrame, { type DeviceVariant } from "./DeviceFrame";
 import PhonePreviewGallery from "./PhonePreviewGallery";
-
-interface Cta {
-  label: string;
-  href: string;
-  external: boolean;
-}
 
 /** Malformed URLs fall through as undefined rather than throwing. */
 function hostnameOf(url?: string): string | undefined {
@@ -35,47 +29,6 @@ function hostnameOf(url?: string): string | undefined {
 /** Bare domain for the browser frame's address bar. */
 function domainOf(url?: string): string | undefined {
   return hostnameOf(url)?.replace(/^www\./i, "");
-}
-
-/**
- * Primary download / live link, plus an optional marketing-site link when
- * both exist (CyberSimply: App Store + cybersimply.com).
- */
-function ctasFor(project: Project): Cta[] {
-  const ctas: Cta[] = [];
-  const liveUrl = resolvedUrl(project);
-  const websiteUrl = resolvedWebsiteUrl(project);
-
-  if (liveUrl) {
-    // Label follows the destination, not the category — VoiceLocal is a
-    // product that lives on its own site rather than the App Store.
-    ctas.push({
-      label: isAppStoreProject(project) ? "View on App Store" : "Visit Site",
-      href: liveUrl,
-      external: true,
-    });
-  }
-
-  if (websiteUrl && websiteUrl !== liveUrl) {
-    ctas.push({
-      label: "Visit Website",
-      href: websiteUrl,
-      external: true,
-    });
-  }
-
-  if (ctas.length > 0) return ctas;
-  if (project.category === "client") return [];
-  if (project.caseStudyUrl) {
-    return [
-      {
-        label: "Read the case study",
-        href: project.caseStudyUrl,
-        external: false,
-      },
-    ];
-  }
-  return [];
 }
 
 /**
@@ -103,7 +56,7 @@ export default function ProjectBlock({
       transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
     },
   };
-  const ctas = ctasFor(project);
+  const ctas = projectCtas(project);
 
   /**
    * Variant is derived from the destination, not a slug list: anything on
@@ -186,7 +139,14 @@ export default function ProjectBlock({
             {/* h2 under /work's h1 — it was an h3 when the feed was one
                 section of the homepage. Already styled at h2 size, so the
                 tag change is semantics only, no visual difference. */}
-            <h2 className="font-display text-h2 text-paper">{project.name}</h2>
+            <h2 className="font-display text-h2 text-paper">
+              <Link
+                href={`/work/${project.slug}`}
+                className="transition-colors hover:text-phosphor"
+              >
+                {project.name}
+              </Link>
+            </h2>
             <p className="mt-3 max-w-xl text-body text-paper/70">
               {project.tagline}
             </p>

@@ -67,7 +67,7 @@ export default function Services() {
                     <span key={project.slug}>
                       {i > 0 ? <span className="text-steel"> · </span> : null}
                       <Link
-                        href={`/work#${project.slug}`}
+                        href={`/work/${project.slug}`}
                         className="text-phosphor underline-offset-4 transition-colors hover:underline"
                       >
                         {project.name}

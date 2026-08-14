@@ -1,12 +1,11 @@
 import type { MetadataRoute } from "next";
+import { projects } from "@/lib/projects";
 import { SITE_ORIGIN } from "@/lib/site";
 
-/**
- * Static routes only — there are no /work/[slug] case-study pages yet.
- * When those land, append them from lib/projects.ts here.
- */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = [
+  const lastModified = new Date();
+
+  const routes: MetadataRoute.Sitemap = [
     "",
     "/work",
     "/services",
@@ -17,14 +16,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/feedback",
     "/legal",
     "/terms",
-  ];
-
-  const lastModified = new Date();
-
-  return routes.map((path) => ({
+  ].map((path) => ({
     url: `${SITE_ORIGIN}${path}`,
     lastModified,
     changeFrequency: path === "" ? "weekly" : "monthly",
-    priority: path === "" ? 1 : path === "/contact" || path === "/services" ? 0.9 : 0.7,
+    priority:
+      path === "" ? 1 : path === "/contact" || path === "/services" ? 0.9 : 0.7,
   }));
+
+  const workPages: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${SITE_ORIGIN}/work/${project.slug}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [...routes, ...workPages];
 }

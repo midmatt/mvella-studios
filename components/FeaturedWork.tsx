@@ -12,6 +12,7 @@ import { isAppStoreProject, projects } from "@/lib/projects";
  *
  * Capped at four: every project is currently `featured`, so without the slice
  * this would render the whole feed and defeat the point of condensing.
+ * Each card links to that project's /work/[slug] about page.
  */
 const MAX_CARDS = 4;
 
@@ -33,41 +34,43 @@ function Card({ project }: { project: (typeof projects)[number] }) {
   const portrait = isAppStoreProject(project);
 
   return (
-    <li className="group bg-panel transition-colors duration-300 hover:bg-panel-raised">
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink">
-        {imageFailed ? (
-          <div className="flex h-full w-full items-center justify-center px-4 text-center">
-            <span className="mono-label text-paper/50">{project.name}</span>
-          </div>
-        ) : (
-          <Image
-            src={project.heroImage}
-            alt={`${project.name} — featured project screenshot`}
-            fill
-            sizes="(min-width: 768px) 552px, calc(100vw - 48px)"
-            className={`${
-              portrait ? "object-contain" : "object-cover object-top"
-            } motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-[1.02]`}
-            onError={() => setImageFailed(true)}
-          />
-        )}
-      </div>
+    <li className="bg-panel transition-colors duration-300 hover:bg-panel-raised">
+      <Link href={`/work/${project.slug}`} className="group block">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink">
+          {imageFailed ? (
+            <div className="flex h-full w-full items-center justify-center px-4 text-center">
+              <span className="mono-label text-paper/50">{project.name}</span>
+            </div>
+          ) : (
+            <Image
+              src={project.heroImage}
+              alt={`${project.name} — featured project screenshot`}
+              fill
+              sizes="(min-width: 768px) 552px, calc(100vw - 48px)"
+              className={`${
+                portrait ? "object-contain" : "object-cover object-top"
+              } motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-[1.02]`}
+              onError={() => setImageFailed(true)}
+            />
+          )}
+        </div>
 
-      <div className="relative p-8">
-        <p className="eyebrow text-phosphor">
-          {STATUS_LABEL[project.status] ?? project.status} · {project.year}
-        </p>
-        <h3 className="mt-4 font-display text-h3 text-paper">{project.name}</h3>
-        <p className="mt-3 pr-10 text-body text-paper/70">{project.tagline}</p>
-        <span
-          aria-hidden="true"
-          className="absolute bottom-8 right-8 flex h-9 w-9 items-center justify-center border border-steel text-paper/50 transition-colors duration-300 group-hover:border-phosphor group-hover:bg-phosphor group-hover:text-ink"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M7 17 17 7M9 7h8v8" />
-          </svg>
-        </span>
-      </div>
+        <div className="relative p-8">
+          <p className="eyebrow text-phosphor">
+            {STATUS_LABEL[project.status] ?? project.status} · {project.year}
+          </p>
+          <h3 className="mt-4 font-display text-h3 text-paper">{project.name}</h3>
+          <p className="mt-3 pr-10 text-body text-paper/70">{project.tagline}</p>
+          <span
+            aria-hidden="true"
+            className="absolute bottom-8 right-8 flex h-9 w-9 items-center justify-center border border-steel text-paper/50 transition-colors duration-300 group-hover:border-phosphor group-hover:bg-phosphor group-hover:text-ink"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M7 17 17 7M9 7h8v8" />
+            </svg>
+          </span>
+        </div>
+      </Link>
     </li>
   );
 }
