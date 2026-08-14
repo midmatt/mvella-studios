@@ -144,37 +144,39 @@ export default function Hero() {
         </div>
 
         {/* Portrait paints at opacity 1. Compact on mobile so it stays in-viewport
-            without pushing CTAs below the fold; full agency frame from lg up. */}
-        <div className="relative mx-auto h-56 w-[10.5rem] lg:h-auto lg:w-full lg:max-w-none">
-          <div className="relative h-full w-full lg:aspect-[3/4]">
-            <div
-              aria-hidden="true"
-              className="absolute right-[6%] top-[8%] h-[70%] w-[62%] bg-phosphor"
-              style={{ clipPath: "polygon(22% 0, 100% 0, 78% 100%, 0 100%)" }}
-            />
-            <div
-              aria-hidden="true"
-              className="absolute right-[2%] top-[4%] h-[52%] w-[34%] border border-phosphor/40"
-              style={{ clipPath: "polygon(30% 0, 100% 0, 70% 100%, 0 100%)" }}
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-[8%] bottom-0 h-[60%] rounded-[50%] bg-phosphor/10 blur-2xl"
-            />
+            without pushing CTAs below the fold; full agency frame from lg up.
+            Box matches the PNG (343×658) so a reload can't stretch it: fill + a
+            3:4 / lg:w-full column was painting object-fit:fill before contain. */}
+        <div className="relative mx-auto aspect-[343/658] h-56 w-fit lg:h-auto lg:w-full lg:max-w-[22.5rem]">
+          <div
+            aria-hidden="true"
+            className="absolute right-[6%] top-[8%] h-[70%] w-[62%] bg-phosphor"
+            style={{ clipPath: "polygon(22% 0, 100% 0, 78% 100%, 0 100%)" }}
+          />
+          <div
+            aria-hidden="true"
+            className="absolute right-[2%] top-[4%] h-[52%] w-[34%] border border-phosphor/40"
+            style={{ clipPath: "polygon(30% 0, 100% 0, 70% 100%, 0 100%)" }}
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-[8%] bottom-0 h-[60%] rounded-[50%] bg-phosphor/10 blur-2xl"
+          />
 
-            <Image
-              src="/about/matthew-header.png"
-              alt="Matthew Vella"
-              fill
-              priority
-              fetchPriority="high"
-              sizes="(min-width: 1024px) 480px, 168px"
-              className="relative object-contain object-bottom drop-shadow-[0_25px_45px_rgba(0,0,0,0.55)]"
-            />
+          <Image
+            src="/about/matthew-header.png"
+            alt="Matthew Vella"
+            width={343}
+            height={658}
+            priority
+            fetchPriority="high"
+            sizes="(min-width: 1024px) 360px, 117px"
+            className="relative h-full w-full object-contain object-bottom drop-shadow-[0_25px_45px_rgba(0,0,0,0.55)]"
+            style={{ objectFit: "contain" }}
+          />
 
-            <div className="absolute -bottom-2 left-0 hidden lg:-left-6 lg:block">
-              <AvailabilityBadge />
-            </div>
+          <div className="absolute -bottom-2 left-0 hidden lg:-left-6 lg:block">
+            <AvailabilityBadge />
           </div>
         </div>
       </div>
