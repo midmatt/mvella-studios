@@ -42,8 +42,8 @@ export const credentials: Credential[] = [
     name: "CyberPatriot",
     caption: "National Youth Cyber Defense Competition — Platinum tier, Linux Team Lead",
     logo: "/credentials/cyberpatriot.png",
-    width: 276,
-    height: 276,
+    width: 512,
+    height: 512,
     href: "https://www.uscyberpatriot.org/",
   },
   {
@@ -51,8 +51,8 @@ export const credentials: Credential[] = [
     name: "Silver Knight Awards",
     caption: "Nominee — Vocational-Technical (Miami Herald)",
     logo: "/credentials/silver-knight.png",
-    width: 1024,
-    height: 1024,
+    width: 512,
+    height: 512,
     href: "https://www.miamiherald.com/site-services/miami-herald-events/silver-knight/",
   },
 ];

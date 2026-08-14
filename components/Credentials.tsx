@@ -42,6 +42,7 @@ function CredentialCard({
           alt=""
           width={credential.width}
           height={credential.height}
+          sizes="176px"
           className="max-h-14 w-auto max-w-[9.5rem] object-contain sm:max-h-16 sm:max-w-[11rem]"
           aria-hidden
         />
