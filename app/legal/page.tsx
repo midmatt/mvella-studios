@@ -5,7 +5,8 @@ import { LEGAL_EMAIL } from "@/lib/contact";
 /**
  * Transcribed from legal-privacy-policy.md, all REPLACE markers resolved to
  * what Matthew confirmed on 2026-08-07: Vercel Web Analytics, Google Ads,
- * and (as of Aug 14 2026) Google Analytics 4 — all installed in
+ * and (as of Aug 14 2026) Google Analytics 4, gated by Google Consent
+ * Mode v2 and a site-wide Accept/Reject cookie banner — all installed in
  * app/layout.tsx; this section describes what actually runs — and
  * agreement-record retention of engagement + 5 years (chosen to outlast
  * Florida's 5-year statute of limitations on written contracts).
@@ -66,15 +67,44 @@ export default function LegalPage() {
         library as Google Ads. GA4 collects page views, referrers, and
         device, browser, and approximate location data so we can understand
         how the site is used. Google may set or read cookies and process this
-        data under its own privacy policy.
+        data under its own privacy policy — but only after you Accept cookies
+        (see Cookies &amp; Consent below).
       </p>
       <p>
         Google Ads (gtag) is used to measure advertising performance. When
         you successfully submit the contact form, a conversion event may be
         sent to Google Ads. Google may set or read cookies and process
-        device and interaction data under its own privacy policy. Beyond
-        that, the only automatic collection is what&rsquo;s strictly
-        necessary for hosting to function (standard server request logs).
+        device and interaction data under its own privacy policy — again,
+        advertising cookies are only set if you Accept. Beyond that, the
+        only automatic collection is what&rsquo;s strictly necessary for
+        hosting to function (standard server request logs).
+      </p>
+
+      <h2>Cookies &amp; Consent</h2>
+      <p>
+        A cookie banner on this site asks you to Accept or Reject analytics
+        and advertising cookies. There is no pre-ticked box and no
+        dismiss-only control — you choose.
+      </p>
+      <p>
+        Your choice is stored locally in your browser (localStorage key{" "}
+        <code>cookie-consent</code>) so we can remember it on later visits.
+        That storage entry is not an advertising cookie.
+      </p>
+      <p>
+        Google tags load under{" "}
+        <strong>Consent Mode v2</strong>. Until you Accept, storage is
+        denied for <code>ad_storage</code>, <code>analytics_storage</code>,{" "}
+        <code>ad_user_data</code>, and <code>ad_personalization</code>. If
+        you Accept, those signals are granted and Google may set cookies
+        such as <code>_gcl_au</code> for ads measurement and GA4 cookies for
+        analytics. If you Reject, those signals stay denied: gtag.js still
+        loads so Google can use cookieless conversion modeling, but it must
+        not set advertising cookies.
+      </p>
+      <p>
+        Vercel Web Analytics does not use cookies and is not gated by this
+        banner.
       </p>
 
       <h2>How We Use This Information</h2>
@@ -140,7 +170,9 @@ export default function LegalPage() {
         You can request a copy of the information we hold about you, ask us to
         correct it, or ask us to delete it (subject to any records we&rsquo;re
         required to keep for legal or contractual reasons) by emailing{" "}
-        <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>.
+        <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>. Clearing this
+        site&rsquo;s data in your browser removes the stored cookie choice and
+        will show the banner again.
       </p>
 
       <h2>Changes to This Policy</h2>

@@ -4,7 +4,9 @@ import { Analytics } from "@vercel/analytics/react";
 import { bodyFont, displayFont, monoFont } from "./fonts";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 import StickyMobileCta from "@/components/StickyMobileCta";
+import { GOOGLE_CONSENT_DEFAULT_SCRIPT } from "@/lib/cookie-consent";
 import { GOOGLE_ADS_ID } from "@/lib/google-ads";
 import { GOOGLE_ANALYTICS_ID } from "@/lib/google-analytics";
 import { profile } from "@/lib/profile";
@@ -62,9 +64,17 @@ export default function RootLayout({
       className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}
     >
       <body className="pb-20 md:pb-0">
+        {/* Consent Mode v2 default denied — blocking/beforeInteractive so it
+            runs in the initial HTML before gtag.js. Do not move this into the
+            banner's useEffect (too late on first paint). lazyOnload gtag is
+            unchanged so it still avoids competing with Hero LCP. */}
+        <Script id="google-consent-default" strategy="beforeInteractive">
+          {GOOGLE_CONSENT_DEFAULT_SCRIPT}
+        </Script>
         <Nav />
         <main>{children}</main>
         <Footer />
+        <CookieConsentBanner />
         <StickyMobileCta />
         <script
           type="application/ld+json"

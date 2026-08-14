@@ -1,15 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import {
+  COOKIE_CONSENT_CHANGE_EVENT,
+  getStoredCookieConsent,
+} from "@/lib/cookie-consent";
 
 /**
  * Fixed bottom CTA for small screens only. Hidden on /contact and the
  * thank-you route so it never stacks on top of the form or the post-submit
  * confirmation. Safe-area padding clears the iOS home indicator.
+ *
+ * Also hidden while the cookie banner is up (z-[70]) so the two bars
+ * don't fight for the bottom edge.
  */
 export default function StickyMobileCta() {
   const pathname = usePathname();
+  const [consentBannerOpen, setConsentBannerOpen] = useState(false);
   const hidden =
     pathname === "/contact" ||
     pathname === "/contact/thank-you" ||
@@ -18,7 +27,14 @@ export default function StickyMobileCta() {
     pathname === "/feedback" ||
     pathname === "/hiring";
 
-  if (hidden) return null;
+  useEffect(() => {
+    const sync = () => setConsentBannerOpen(getStoredCookieConsent() === null);
+    sync();
+    window.addEventListener(COOKIE_CONSENT_CHANGE_EVENT, sync);
+    return () => window.removeEventListener(COOKIE_CONSENT_CHANGE_EVENT, sync);
+  }, []);
+
+  if (hidden || consentBannerOpen) return null;
 
   return (
     <div
