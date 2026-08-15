@@ -20,9 +20,16 @@ export default function AvailabilityBadge() {
             d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"
           />
         </defs>
-        <text className="fill-phosphor font-mono text-[10.5px] uppercase tracking-[0.14em]">
-          <textPath href="#badge-circle" startOffset="0%">
-            Available for freelance · Available for freelance ·
+        <text className="fill-phosphor font-mono text-[8px] uppercase tracking-[0.12em]">
+          {/* Path circumference ≈ 232. One phrase, stretched to fit once —
+              two copies at 10.5px overflowed and read AVAIAVAILABLE. */}
+          <textPath
+            href="#badge-circle"
+            startOffset="0%"
+            textLength="232"
+            lengthAdjust="spacing"
+          >
+            AVAILABLE FOR FREELANCE ·
           </textPath>
         </text>
       </svg>

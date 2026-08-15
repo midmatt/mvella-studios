@@ -75,12 +75,8 @@ export default function Hero() {
             </span>
           </p>
 
-          <h1 className="max-w-2xl font-display text-[clamp(2.25rem,8vw,6rem)] uppercase leading-[0.95] text-paper lg:text-display">
-            Security-minded
-            <br />
-            software, built
-            <br />
-            and{" "}
+          <h1 className="max-w-3xl font-display text-[clamp(2.5rem,5vw,4.25rem)] uppercase leading-none tracking-[-0.02em] text-paper">
+            Security-minded software, built and{" "}
             <span className="text-phosphor">shipped</span>
             <span className="text-phosphor">.</span>
           </h1>
