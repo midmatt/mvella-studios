@@ -9,6 +9,7 @@ import StickyMobileCta from "@/components/StickyMobileCta";
 import { GOOGLE_CONSENT_DEFAULT_SCRIPT } from "@/lib/cookie-consent";
 import { GOOGLE_ADS_ID } from "@/lib/google-ads";
 import { GOOGLE_ANALYTICS_ID } from "@/lib/google-analytics";
+import { GTM_ID } from "@/lib/google-tag-manager";
 import { profile } from "@/lib/profile";
 import { SITE_ORIGIN, STUDIO_AREA, STUDIO_NAME } from "@/lib/site";
 import "./globals.css";
@@ -64,12 +65,33 @@ export default function RootLayout({
       className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}
     >
       <body className="pb-20 md:pb-0">
+        {/* GTM noscript — first child of body per Google's snippet. */}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+            title="Google Tag Manager"
+          />
+        </noscript>
         {/* Consent Mode v2 default denied — blocking/beforeInteractive so it
-            runs in the initial HTML before gtag.js. Do not move this into the
-            banner's useEffect (too late on first paint). lazyOnload gtag is
-            unchanged so it still avoids competing with Hero LCP. */}
+            runs in the initial HTML before GTM and gtag.js. Do not move this
+            into the banner's useEffect (too late on first paint). lazyOnload
+            gtag is unchanged so it still avoids competing with Hero LCP. */}
         <Script id="google-consent-default" strategy="beforeInteractive">
           {GOOGLE_CONSENT_DEFAULT_SCRIPT}
+        </Script>
+        {/* GTM — afterInteractive so it always loads AFTER the consent-default
+            beforeInteractive snippet. Same dataLayer name ('dataLayer') so
+            Consent Mode updates apply to GTM too. Do not use beforeInteractive
+            here: that would race the default-denied consent. */}
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`}
         </Script>
         <Nav />
         <main>{children}</main>

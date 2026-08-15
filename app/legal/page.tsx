@@ -5,8 +5,9 @@ import { LEGAL_EMAIL } from "@/lib/contact";
 /**
  * Transcribed from legal-privacy-policy.md, all REPLACE markers resolved to
  * what Matthew confirmed on 2026-08-07: Vercel Web Analytics, Google Ads,
- * and (as of Aug 14 2026) Google Analytics 4, gated by Google Consent
- * Mode v2 and a site-wide Accept/Reject cookie banner — all installed in
+ * and (as of Aug 14 2026) Google Analytics 4, plus Google Tag Manager as
+ * the tag loader, gated by Google Consent Mode v2 and a site-wide
+ * Accept/Reject cookie banner — all installed in
  * app/layout.tsx; this section describes what actually runs — and
  * agreement-record retention of engagement + 5 years (chosen to outlast
  * Florida's 5-year statute of limitations on written contracts).
@@ -25,7 +26,7 @@ export default function LegalPage() {
   return (
     <LegalDocument
       title="Legal &amp; Privacy"
-      meta="Effective date: August 14, 2026"
+      meta="Effective date: August 15, 2026"
     >
       <p>
         This page explains what information MVella Studios (&ldquo;we,&rdquo;
@@ -92,15 +93,16 @@ export default function LegalPage() {
         That storage entry is not an advertising cookie.
       </p>
       <p>
-        Google tags load under{" "}
+        Google tags — including Google Tag Manager (the tag loader) and the
+        shared gtag.js library for Ads and GA4 — load under{" "}
         <strong>Consent Mode v2</strong>. Until you Accept, storage is
         denied for <code>ad_storage</code>, <code>analytics_storage</code>,{" "}
         <code>ad_user_data</code>, and <code>ad_personalization</code>. If
         you Accept, those signals are granted and Google may set cookies
         such as <code>_gcl_au</code> for ads measurement and GA4 cookies for
-        analytics. If you Reject, those signals stay denied: gtag.js still
-        loads so Google can use cookieless conversion modeling, but it must
-        not set advertising cookies.
+        analytics. If you Reject, those signals stay denied: GTM and gtag.js
+        still load so Google can use cookieless conversion modeling, but they
+        must not set advertising cookies.
       </p>
       <p>
         Vercel Web Analytics does not use cookies and is not gated by this
@@ -140,6 +142,10 @@ export default function LegalPage() {
         <li>
           <strong>Supabase</strong> — stores records of signed Service
           Agreements (name, email, agreement version, timestamp, IP address).
+        </li>
+        <li>
+          <strong>Google Tag Manager</strong> — loads Google tags. Still
+          gated by Consent Mode v2 (denied until you Accept).
         </li>
         <li>
           <strong>Google Ads</strong> — measures ad conversions from the
