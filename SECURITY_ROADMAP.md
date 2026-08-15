@@ -33,7 +33,7 @@ Public POST routes: `/api/contact`, `/api/agreement`, `/api/app-inquiry`. No GET
 *(no end-user accounts — omitted as an auth product. Operational access is Vercel/Supabase/Stripe/GitHub.)*
 
 - [x] No custom password store or session cookies for visitors
-- [x] `SUPABASE_SECRET_KEY` used only in `/api/agreement` (`createClient` with `persistSession: false`) — never `NEXT_PUBLIC_`
+- [x] `SUPABASE_SECRET_KEY` used only in `/api/agreement` and `/api/webhooks/stripe` (`createClient` with `persistSession: false`) — never `NEXT_PUBLIC_`
 - [ ] MFA on GitHub, Vercel, Supabase, Stripe, Resend, Google Ads (operator accounts — do this in those consoles, not in this repo)
 - [ ] Admin actions are email + dashboard, not an in-app admin; no admin audit log in-app (acceptable; use provider logs)
 
@@ -43,8 +43,8 @@ Public POST routes: `/api/contact`, `/api/agreement`, `/api/app-inquiry`. No GET
 - [x] Deposit amount computed server-side (`resolveQuote` / `DEPOSIT_PERCENT`); client cannot set the charge
 - [x] Live `STRIPE_SECRET_KEY` only when `VERCEL_ENV === "production"`; previews/dev use `STRIPE_TEST_SECRET_KEY` **with no live fallback** (`app/api/agreement/route.ts`)
 - [x] Invoice metadata includes `agreement_id`; row updated with `stripe_customer_id` / `stripe_invoice_id`
-- [ ] Stripe webhook signature verification (`invoice.paid` / `invoice.payment_failed`) — **not implemented**. Paid state is not used to unlock a product; still should-have so the `agreements` row reflects payment without opening Stripe
-- [ ] Webhook handler idempotency (dedupe `event.id`) — blocked on adding the webhook
+- [x] Stripe webhook signature verification (`invoice.paid` / `invoice.payment_failed`) in `/api/webhooks/stripe` — sets `payment_status` / `paid_at` on `agreements`
+- [x] Webhook updates are idempotent field sets (re-delivery of `invoice.paid` does not throw). No `event.id` dedupe table yet
 - [x] Idempotency of "create invoice" is best-effort (Stripe customer reused by email); not using Stripe idempotency keys yet
 - [ ] Failed payment behavior is "invoice stays open 14 days" (Stripe `days_until_due`) — no in-app `past_due` gate because there is no gated app
 
@@ -93,6 +93,7 @@ Reference: `references/rate-limiting-and-abuse.md`
 | `RESEND_API_KEY` | resend.com API keys |
 | `SUPABASE_SECRET_KEY` | Supabase project API |
 | `STRIPE_SECRET_KEY` / test | Stripe dashboard → Developers → API keys |
+| `STRIPE_WEBHOOK_SECRET` / test | Stripe dashboard → Developers → Webhooks → signing secret |
 | Google Ads / GA4 / GTM | Google Ads / Analytics / Tag Manager |
 | `CONTACT_TO_EMAIL` | Vercel env (not a secret, but a redirect target) |
 
@@ -111,7 +112,7 @@ Reference: `references/infra-and-secrets.md`
 - [x] No live Stripe key on preview/dev
 
 **Should-have soon after launch:**
-- [ ] Stripe `invoice.paid` webhook with signature verification; store `paid_at` on `agreements`
+- [x] Stripe `invoice.paid` webhook with signature verification; store `paid_at` on `agreements`
 - [ ] Upstash (or Vercel firewall) rate limit if spam/invoice-probing appears
 - [ ] Content-Security-Policy tuned for GTM + next/image + Vercel Analytics
 - [ ] `npm audit` / Dependabot alerts actually merged on a cadence

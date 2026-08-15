@@ -35,8 +35,9 @@ Copy `.env.example` to `.env.local`. Without these, the forms and signing flow f
 - `RESEND_API_KEY` — required for `/api/contact` and `/api/agreement` to send mail. Absent → both routes answer 503 and the forms show a direct-email fallback.
 - `CONTACT_TO_EMAIL` — notification recipient. Defaults to `matthew@mvella.com`.
 - `CONTACT_FROM_EMAIL` — verified sender. Defaults to `MVella Studios <hello@mvella.com>` (must be a domain verified in Resend).
-- `SUPABASE_URL` / `SUPABASE_SECRET_KEY` — the `agreements` table behind `/agreement`. Secret key is server-only; the table has RLS enabled with no policies, so the API route is its only reader and writer.
+- `SUPABASE_URL` / `SUPABASE_SECRET_KEY` — the `agreements` table behind `/agreement`. Secret key is server-only; the table has RLS enabled with no policies, so `/api/agreement` and `/api/webhooks/stripe` are the only readers/writers.
 - `STRIPE_SECRET_KEY` (live, production only) / `STRIPE_TEST_SECRET_KEY` (previews and local dev) — deposit invoicing when an agreement is signed via a quote link.
+- `STRIPE_WEBHOOK_SECRET` (live, production) / `STRIPE_TEST_WEBHOOK_SECRET` (previews and local `stripe listen`) — signing secret for `POST /api/webhooks/stripe`.
 - `NEXT_PUBLIC_SITE_URL` — used in emails and quote signing links.
 
 ## Outstanding
