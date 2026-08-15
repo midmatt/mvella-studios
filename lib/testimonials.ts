@@ -26,7 +26,7 @@ export const testimonials: Testimonial[] = [
   {
     slug: "jovell",
     name: "Joseph",
-    company: "JoVell Hospitality Group",
+    company: "JoVell Hospitality Group & OOT Tastings",
     rating: 5,
     quote:
       "Matthew got our site live fast, exactly the way we pictured it, no back and forth.",

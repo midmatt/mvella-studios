@@ -4,6 +4,7 @@ import { z } from "zod";
 import { findStudioApp, studioApps } from "@/lib/apps";
 import { FROM_EMAIL as DEFAULT_FROM_EMAIL, NOTIFY_EMAIL } from "@/lib/contact";
 import { esc, link, renderEmail, type EmailBlock } from "@/lib/email";
+import { guardPublicPost } from "@/lib/request-guard";
 
 /**
  * Support + Feedback for studio apps (AlarmQR, CyberSimply, …).
@@ -105,6 +106,9 @@ function autoReplyText(data: Submission): string {
 }
 
 export async function POST(request: Request) {
+  const blocked = guardPublicPost(request, "app-inquiry");
+  if (blocked) return blocked;
+
   let body: unknown;
   try {
     body = await request.json();

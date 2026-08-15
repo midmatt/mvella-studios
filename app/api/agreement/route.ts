@@ -12,6 +12,7 @@ import {
 } from "@/lib/agreement";
 import { FROM_EMAIL as DEFAULT_FROM_EMAIL, NOTIFY_EMAIL } from "@/lib/contact";
 import { esc, link, renderEmail, type EmailBlock } from "@/lib/email";
+import { guardPublicPost } from "@/lib/request-guard";
 import { findAddOn, findPackage, formatUsd } from "@/lib/packages";
 
 /**
@@ -145,6 +146,9 @@ function clientIp(request: Request): string | null {
 }
 
 export async function POST(request: Request) {
+  const blocked = guardPublicPost(request, "agreement", 5);
+  if (blocked) return blocked;
+
   let body: unknown;
   try {
     body = await request.json();
@@ -220,16 +224,14 @@ export async function POST(request: Request) {
 
   /**
    * Key selection by environment: STRIPE_SECRET_KEY is the LIVE key and is
-   * used only on the production deployment; previews and local dev use
-   * STRIPE_TEST_SECRET_KEY so a test signing can never issue a real
-   * invoice. Falls back to the live key when no test key exists, so a
-   * missing test key degrades to prod behavior rather than silently
-   * skipping invoices.
+   * used only on the production deployment. Previews and local dev use
+   * STRIPE_TEST_SECRET_KEY only — never fall back to live, so a missing
+   * test key skips invoicing rather than charging a real customer.
    */
   const stripeKey =
     process.env.VERCEL_ENV === "production"
       ? process.env.STRIPE_SECRET_KEY
-      : process.env.STRIPE_TEST_SECRET_KEY ?? process.env.STRIPE_SECRET_KEY;
+      : process.env.STRIPE_TEST_SECRET_KEY;
 
   if (quote && stripeKey) {
     invoice = await createDepositInvoice(

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { agreementLink, resolveQuote } from "@/lib/agreement";
 import { FROM_EMAIL as DEFAULT_FROM_EMAIL, NOTIFY_EMAIL } from "@/lib/contact";
 import { esc, link, monoAccent, renderEmail, type EmailBlock } from "@/lib/email";
+import { guardPublicPost } from "@/lib/request-guard";
 import {
   computeTotal,
   findAddOn,
@@ -284,6 +285,9 @@ function autoReplyText(data: Submission): string {
 }
 
 export async function POST(request: Request) {
+  const blocked = guardPublicPost(request, "contact");
+  if (blocked) return blocked;
+
   let body: unknown;
   try {
     body = await request.json();

@@ -8,9 +8,10 @@ import HiringTeaser from "@/components/HiringTeaser";
 import ClosingCta from "@/components/ClosingCta";
 
 /**
- * Condensed homepage. Qualifications skim above Featured Work. A hiring
- * teaser sits near the bottom for recruiters; ClosingCta keeps the primary
- * client CTA last.
+ * Condensed homepage. Qualifications skim above Featured Work. Testimonials
+ * sit directly after selected work so social proof lands before services.
+ * A hiring teaser sits near the bottom for recruiters; ClosingCta keeps the
+ * primary client CTA last.
  */
 export default function Home() {
   return (
@@ -19,8 +20,8 @@ export default function Home() {
       <StatsBar />
       <Credentials />
       <FeaturedWork />
-      <ServicesTeaser />
       <Testimonials />
+      <ServicesTeaser />
       <HiringTeaser />
       <ClosingCta />
     </>

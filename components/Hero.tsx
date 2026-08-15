@@ -76,15 +76,18 @@ export default function Hero() {
           </p>
 
           <h1 className="max-w-2xl font-display text-[clamp(2.25rem,8vw,6rem)] uppercase leading-[0.95] text-paper lg:text-display">
-            I build digital
+            Security-minded
             <br />
-            <span className="text-phosphor">products</span>
+            software, built
+            <br />
+            and{" "}
+            <span className="text-phosphor">shipped</span>
             <span className="text-phosphor">.</span>
           </h1>
 
           <p className="mt-3 max-w-md text-[0.9375rem] leading-snug text-paper/70 lg:mt-7 lg:text-body lg:leading-relaxed">
             Freelance web and mobile development from a cybersecurity student
-            who ships fast — without cutting corners on security.
+            who ships fast.
           </p>
 
           <div className="mt-4 flex flex-wrap items-center gap-2 lg:mt-8 lg:gap-4">
