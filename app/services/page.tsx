@@ -8,7 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const metadata: Metadata = {
   title: "Services — MVella Studios",
   description:
-    "Web development, mobile apps, security-minded architecture, and SEO audits — freelance packages and a live quote builder from South Florida.",
+    "Web development, mobile apps, security-minded architecture, SEO audits, and AI Speed-to-Lead systems — freelance packages and a live quote builder from South Florida.",
 };
 
 export default function ServicesPage() {

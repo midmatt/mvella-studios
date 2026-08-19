@@ -21,6 +21,10 @@ export interface Service {
   deliverables: string[];
   /** Project slugs from lib/projects.ts to link as related case studies. */
   relatedProjectSlugs?: string[];
+  /** Dedicated page. Cards link here instead of `/services#slug`. */
+  href?: string;
+  /** Label for the card CTA when `href` is set. */
+  cta?: string;
 }
 
 export const services: Service[] = [
@@ -82,5 +86,21 @@ export const services: Service[] = [
       "Fixes scoped so they can be actioned",
     ],
     relatedProjectSlugs: ["oot-tastings", "holy-beliefs"],
+  },
+  {
+    slug: "ai-systems",
+    title: "AI Systems",
+    teaser:
+      "Speed-to-Lead: a form submit rings the phone in seconds and books the calendar.",
+    description:
+      "Outbound AI for service businesses that lose jobs to slow follow-up — roofing, HVAC, solar. A lead hits the form, an agent calls within seconds, discloses Florida recording consent, qualifies, and books Matthew’s calendar. Missed pickup falls back to SMS with the same booking link. Live demo is isolated from the studio contact pipeline.",
+    deliverables: [
+      "Speed-to-Lead agent (call within seconds of submit)",
+      "Florida all-party recording consent before qualifying",
+      "Cal.com booking on the live call",
+      "Twilio SMS fallback after two rings",
+    ],
+    href: "/ai-systems",
+    cta: "Try the live demo",
   },
 ];

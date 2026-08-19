@@ -9,6 +9,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 const links = [
   { label: "Work", href: "/work" },
   { label: "Services", href: "/services" },
+  { label: "AI Systems", href: "/ai-systems" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -36,7 +37,7 @@ export default function Nav() {
 
         <nav
           aria-label="Primary"
-          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex"
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-5 lg:gap-8 md:flex"
         >
           {links.map((link) => (
             <Link

@@ -29,6 +29,11 @@ const ICONS: Record<string, ReactNode> = {
       <path d="M20.5 15a9 9 0 1 0-17 0" />
     </>
   ),
+  "ai-systems": (
+    <>
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+    </>
+  ),
 };
 
 export default function ServicesTeaser() {
@@ -45,42 +50,47 @@ export default function ServicesTeaser() {
         </h2>
 
         {/* gap-px over a steel wash = hairline divider grid */}
-        <ul className="mt-14 grid gap-px overflow-hidden border border-steel/40 bg-steel/40 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((service, i) => (
-            <li
-              key={service.slug}
-              className="accent-corner group relative flex flex-col bg-panel p-7 transition-colors duration-300 hover:bg-panel-raised"
-            >
-              <svg
-                width="30"
-                height="30"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-phosphor"
-                aria-hidden="true"
-              >
-                {ICONS[service.slug]}
-              </svg>
+        <ul className="mt-14 grid gap-px overflow-hidden border border-steel/40 bg-steel/40 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((service, i) => {
+            const href = service.href ?? `/services#${service.slug}`;
+            return (
+              <li key={service.slug}>
+                <Link
+                  href={href}
+                  className="accent-corner group relative flex h-full flex-col bg-panel p-7 transition-colors duration-300 hover:bg-panel-raised"
+                >
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-phosphor"
+                    aria-hidden="true"
+                  >
+                    {ICONS[service.slug]}
+                  </svg>
 
-              <h3 className="mt-8 font-display text-h3 text-paper">
-                {service.title}
-              </h3>
-              <p className="mt-3 flex-1 text-[0.95rem] leading-relaxed text-paper/60">
-                {service.teaser}
-              </p>
+                  <h3 className="mt-8 font-display text-h3 text-paper">
+                    {service.title}
+                  </h3>
+                  <p className="mt-3 flex-1 text-[0.95rem] leading-relaxed text-paper/60">
+                    {service.teaser}
+                  </p>
 
-              <span
-                aria-hidden="true"
-                className="pointer-events-none mt-8 font-display text-5xl font-bold leading-none text-paper/10 transition-colors duration-300 group-hover:text-phosphor/25"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-            </li>
-          ))}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none mt-8 font-display text-5xl font-bold leading-none text-paper/10 transition-colors duration-300 group-hover:text-phosphor/25"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
         <Link

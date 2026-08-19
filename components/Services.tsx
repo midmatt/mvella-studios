@@ -19,7 +19,8 @@ export default function Services() {
           What I build
         </h1>
         <p className="mt-6 max-w-xl text-body text-paper/70">
-          Four things, done properly, by the person you actually talk to.
+          Studio builds, plus AI systems for operators who lose jobs to slow
+          follow-up — done by the person you actually talk to.
         </p>
       </div>
 
@@ -75,6 +76,15 @@ export default function Services() {
                     </span>
                   ))}
                 </p>
+              ) : null}
+
+              {service.href ? (
+                <Link
+                  href={service.href}
+                  className="mono-label mt-6 inline-block text-phosphor underline-offset-4 transition-colors hover:underline"
+                >
+                  {service.cta ?? "Open"}&nbsp;&rarr;
+                </Link>
               ) : null}
             </li>
           );

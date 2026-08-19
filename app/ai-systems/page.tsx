@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SpeedToLeadForm from "@/components/ai-systems/SpeedToLeadForm";
 
 export const metadata: Metadata = {
@@ -25,8 +26,17 @@ const STEPS = [
 export default function AiSystemsPage() {
   return (
     <div className="pt-16">
+      <div className="mx-auto max-w-6xl px-6 pt-10">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Services", href: "/services" },
+            { label: "AI Systems" },
+          ]}
+        />
+      </div>
       <section aria-label="AI Speed-to-Lead demo" className="bg-ink">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-6 pb-24 pt-4">
           <p className="mono-label text-phosphor">&gt; ./speed-to-lead --demo</p>
           <h1 className="mt-4 max-w-4xl font-display text-h2 text-paper">
             Submit a form. Your phone rings. The calendar gets a booking.
