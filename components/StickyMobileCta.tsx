@@ -11,7 +11,9 @@ import {
 /**
  * Fixed bottom CTA for small screens only. Hidden on /contact and the
  * thank-you route so it never stacks on top of the form or the post-submit
- * confirmation. Safe-area padding clears the iOS home indicator.
+ * confirmation. Also hidden on /ai-systems so the demo is not pulled into
+ * the production contact pipeline. Safe-area padding clears the iOS home
+ * indicator.
  *
  * Also hidden while the cookie banner is up (z-[70]) so the two bars
  * don't fight for the bottom edge.
@@ -25,7 +27,8 @@ export default function StickyMobileCta() {
     pathname.startsWith("/contact/thank-you") ||
     pathname === "/support" ||
     pathname === "/feedback" ||
-    pathname === "/hiring";
+    pathname === "/hiring" ||
+    pathname.startsWith("/ai-systems");
 
   useEffect(() => {
     const sync = () => setConsentBannerOpen(getStoredCookieConsent() === null);

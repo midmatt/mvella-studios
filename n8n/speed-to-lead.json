@@ -1,0 +1,211 @@
+{
+  "name": "MVella Speed-to-Lead (demo)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "speed-to-lead",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+      "name": "Lead intake",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "webhookId": "c3f1a8d2-4b6e-4c91-9f20-8a7d5e1b0c44",
+      "notes": "POST from Next.js /api/ai-systems/leads. Activate this workflow and set N8N_WEBHOOK_URL to the Production webhook URL."
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $input.first().json;\nconst lead = payload.lead || {};\n\nconst prompt = [\n  'You are scoring a Speed-to-Lead demo inquiry for MVella Studios.',\n  'Return JSON only with keys:',\n  'score (integer 1-10), summary (one paragraph), urgency (low|medium|high), opener (one spoken sentence AFTER recording consent).',\n  '',\n  'Name: ' + (lead.name || ''),\n  'Phone: ' + (lead.phone || ''),\n  'Service: ' + (lead.service_type || ''),\n  'Description: ' + (lead.description || ''),\n].join('\\n');\n\nlet qualification = {\n  score: 5,\n  summary: 'Model unavailable — proceeding with a default mid score.',\n  urgency: 'medium',\n  opener: '',\n};\n\ntry {\n  const claude = await this.helpers.httpRequest({\n    method: 'POST',\n    url: 'https://api.anthropic.com/v1/messages',\n    headers: {\n      'x-api-key': $env.ANTHROPIC_API_KEY,\n      'anthropic-version': '2023-06-01',\n      'content-type': 'application/json',\n    },\n    body: JSON.stringify({\n      model: $env.ANTHROPIC_MODEL || 'claude-sonnet-4-5',\n      max_tokens: 800,\n      messages: [{ role: 'user', content: prompt }],\n    }),\n  });\n  const text = claude?.content?.[0]?.text || (typeof claude === 'string' ? claude : '');\n  const match = String(text).match(/\\{[\\s\\S]*\\}/);\n  if (match) {\n    const parsed = JSON.parse(match[0]);\n    qualification = {\n      score: Number(parsed.score) || 5,\n      summary: String(parsed.summary || qualification.summary),\n      urgency: String(parsed.urgency || 'medium'),\n      opener: String(parsed.opener || ''),\n    };\n  }\n} catch (error) {\n  qualification.summary = 'Claude scoring failed: ' + (error.message || 'unknown error');\n}\n\nreturn [{ json: { ...payload, qualification } }];\n"
+      },
+      "id": "0c6f8a2d-1b47-4f3e-9c8d-2e5a7b9d1c3f",
+      "name": "Qualify with Claude",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "continueOnFail": true,
+      "position": [
+        460,
+        300
+      ],
+      "notes": "Uses ANTHROPIC_API_KEY from the n8n environment. Scoring failure still continues to the outbound call."
+    },
+    {
+      "parameters": {
+        "jsCode": "const intake = $('Lead intake').first().json;\nconst scored = $('Qualify with Claude').first().json;\nconst lead = intake.lead;\nconst vapi = intake.vapi || {};\n\nconst firstMessage = String(vapi.firstMessage || '')\n  .replaceAll('{{name}}', lead.name)\n  .replaceAll('{{serviceType}}', lead.service_type);\n\nconst body = {\n  phoneNumberId: $env.VAPI_PHONE_NUMBER_ID,\n  customer: { number: lead.phone, name: lead.name },\n  metadata: { leadId: lead.id },\n  assistant: {\n    name: 'MVella Speed-to-Lead',\n    firstMessage,\n    firstMessageMode: 'assistant-speaks-first',\n    recordingEnabled: true,\n    maxDurationSeconds: 180,\n    voicemailDetection: { provider: 'vapi', enabled: true },\n    model: {\n      provider: 'anthropic',\n      model: $env.ANTHROPIC_MODEL || 'claude-sonnet-4-5',\n      messages: [{ role: 'system', content: vapi.systemPrompt }],\n    },\n    voice: {\n      provider: 'vapi',\n      voiceId: $env.VAPI_VOICE_ID || 'Savannah',\n    },\n    analysisPlan: {\n      structuredDataPlan: {\n        enabled: true,\n        schema: {\n          type: 'object',\n          properties: {\n            recording_consent: {\n              type: 'string',\n              enum: ['granted', 'declined', 'unknown'],\n            },\n            preferred_start_iso: { type: 'string' },\n            attendee_email: { type: 'string' },\n            booked_intent: { type: 'boolean' },\n          },\n        },\n      },\n    },\n    server: {\n      url: vapi.serverUrl,\n      secret: $env.VAPI_SERVER_SECRET || $env.DEMO_LEADS_WEBHOOK_SECRET,\n      timeoutSeconds: 20,\n    },\n    variableValues: {\n      name: lead.name,\n      serviceType: lead.service_type,\n    },\n  },\n};\n\nconst call = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.vapi.ai/call',\n  headers: {\n    Authorization: 'Bearer ' + $env.VAPI_API_KEY,\n    'Content-Type': 'application/json',\n  },\n  body: JSON.stringify(body),\n});\n\nif (intake.api?.leadUrl) {\n  try {\n    await this.helpers.httpRequest({\n      method: 'PATCH',\n      url: intake.api.leadUrl,\n      headers: {\n        'Content-Type': 'application/json',\n        'x-demo-leads-secret': $env.DEMO_LEADS_WEBHOOK_SECRET,\n        Authorization: 'Bearer ' + $env.DEMO_LEADS_WEBHOOK_SECRET,\n      },\n      body: JSON.stringify({\n        vapi_call_id: call.id || call?.call?.id || null,\n        call_status: 'dialing',\n        qualification_score: scored.qualification?.score,\n        qualification_summary: scored.qualification?.summary,\n        qualification_urgency: scored.qualification?.urgency,\n      }),\n    });\n  } catch (error) {}\n}\n\nreturn [{ json: { ...intake, qualification: scored.qualification, vapiCall: call } }];\n"
+      },
+      "id": "8a1b2c3d-4e5f-6789-abcd-ef0123456789",
+      "name": "Place Vapi call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "continueOnFail": true,
+      "position": [
+        700,
+        300
+      ],
+      "notes": "Transient assistant. firstMessage is the Fla. Stat. § 934.03 disclosure and must stay first. Vapi cloud posts status to Next.js, not localhost n8n."
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 12,
+        "unit": "seconds"
+      },
+      "id": "11aa22bb-33cc-44dd-55ee-66ff77889900",
+      "name": "Wait two rings",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        300
+      ],
+      "webhookId": "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f81",
+      "notes": "About two rings (~6s each). Then inspect the Vapi call."
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $input.first().json;\nconst callId = prev.vapiCall?.id || prev.vapiCall?.call?.id;\nlet call = {};\n\nif (callId) {\n  try {\n    call = await this.helpers.httpRequest({\n      method: 'GET',\n      url: 'https://api.vapi.ai/call/' + callId,\n      headers: { Authorization: 'Bearer ' + $env.VAPI_API_KEY },\n    });\n  } catch (error) {\n    call = { error: error.message };\n  }\n}\n\nconst status = call.status || '';\nconst ended = call.endedReason || '';\nconst answered =\n  status === 'in-progress' ||\n  ['assistant-ended-call', 'customer-ended-call', 'silence-timed-out', 'exceeded-max-duration'].includes(ended);\nconst stillRinging = ['queued', 'ringing', 'dialing'].includes(status);\nconst noAnswer =\n  stillRinging || ['customer-did-not-answer', 'voicemail', 'customer-busy'].includes(ended);\nconst shouldSendSms = !answered && (noAnswer || !status);\n\nif (shouldSendSms && stillRinging && callId) {\n  try {\n    await this.helpers.httpRequest({\n      method: 'DELETE',\n      url: 'https://api.vapi.ai/call/' + callId,\n      headers: { Authorization: 'Bearer ' + $env.VAPI_API_KEY },\n    });\n  } catch (error) {}\n}\n\nreturn [{ json: { ...prev, vapiCallStatus: call, shouldSendSms } }];\n"
+      },
+      "id": "99ab88cd-77ef-66aa-55bb-44cc33dd22ee",
+      "name": "Inspect call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "continueOnFail": true,
+      "position": [
+        1180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "sms-true",
+              "leftValue": "={{ $json.shouldSendSms }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "12cd34ef-56ab-78cd-90ef-12ab34cd56ef",
+      "name": "No answer?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $input.first().json;\nconst lead = prev.lead;\nconst bookingUrl = prev.vapi?.bookingUrl || $env.CAL_COM_BOOKING_URL || 'https://cal.com';\nconst sid = $env.TWILIO_ACCOUNT_SID;\nconst token = $env.TWILIO_AUTH_TOKEN;\nconst from = $env.TWILIO_FROM_NUMBER;\nconst auth = 'Basic ' + Buffer.from(sid + ':' + token).toString('base64');\n\nconst params = new URLSearchParams();\nparams.set('From', from);\nparams.set('To', lead.phone);\nparams.set(\n  'Body',\n  'Hi ' + lead.name + ', this is MVella Studios following up on your ' + lead.service_type +\n    ' request. We tried calling. Book a time with Matthew: ' + bookingUrl\n);\n\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.twilio.com/2010-04-01/Accounts/' + sid + '/Messages.json',\n  headers: {\n    Authorization: auth,\n    'Content-Type': 'application/x-www-form-urlencoded',\n  },\n  body: params.toString(),\n});\n\nconst now = new Date().toISOString();\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: prev.api.leadUrl,\n  headers: {\n    'Content-Type': 'application/json',\n    'x-demo-leads-secret': $env.DEMO_LEADS_WEBHOOK_SECRET,\n    Authorization: 'Bearer ' + $env.DEMO_LEADS_WEBHOOK_SECRET,\n  },\n  body: JSON.stringify({\n    call_status: 'sms_sent',\n    contact_channel: 'sms',\n    sms_sent_at: now,\n  }),\n});\n\nreturn [{ json: { ...prev, smsSent: true } }];\n"
+      },
+      "id": "24ef68ab-90cd-12ef-34ab-56cd78ef90ab",
+      "name": "Twilio SMS fallback",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        420
+      ],
+      "notes": "Uses TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER, CAL_COM_BOOKING_URL."
+    }
+  ],
+  "connections": {
+    "Lead intake": {
+      "main": [
+        [
+          {
+            "node": "Qualify with Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualify with Claude": {
+      "main": [
+        [
+          {
+            "node": "Place Vapi call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Place Vapi call": {
+      "main": [
+        [
+          {
+            "node": "Wait two rings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait two rings": {
+      "main": [
+        [
+          {
+            "node": "Inspect call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inspect call": {
+      "main": [
+        [
+          {
+            "node": "No answer?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No answer?": {
+      "main": [
+        [
+          {
+            "node": "Twilio SMS fallback",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York"
+  },
+  "pinData": {},
+  "versionId": "a9b8c7d6-e5f4-3210-9876-543210fedcba",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

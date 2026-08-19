@@ -3,8 +3,9 @@ import { SITE_ORIGIN } from "@/lib/site";
 
 /**
  * Shared guards for public POST routes (/api/contact, /api/agreement,
- * /api/app-inquiry). Honeypots still sit in each route; this layer stops
- * cross-origin form posts and slows down volumetric spam.
+ * /api/app-inquiry, /api/ai-systems/leads). Honeypots still sit in each
+ * route; this layer stops cross-origin form posts and slows down
+ * volumetric spam.
  *
  * Rate-limit state is in-process. On Vercel each isolate has its own map,
  * so this is a first line, not a global quota. Upgrade to Upstash if abuse
