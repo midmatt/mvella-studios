@@ -57,7 +57,7 @@ export const hiringTracks: HiringTrack[] = [
       "App Store apps, freelance full-stack, production ownership from architecture through monitoring.",
     seeking: "Summer 2027 Software Engineering internship",
     summary:
-      "Cybersecurity undergraduate at FIU Honors College (Minor: Artificial Intelligence) with two applications shipped and maintained on the Apple App Store and a freelance web development practice serving paying clients end-to-end. Builds security-first, production-grade software — from architecture and backend design through deployment and monitoring.",
+      "Cybersecurity undergraduate at FIU Honors College (Minor: Artificial Intelligence) with two applications shipped and maintained on the Apple App Store, a live NFC attendance SaaS (Checkerd), and a freelance web development practice serving paying clients end-to-end. Builds security-first, production-grade software — from architecture and backend design through deployment and monitoring.",
     resumeHref: "/resume/matthew-vella-resume-software-engineering.pdf",
     resumeDownloadAs: "Matthew_Vella_Resume_Software_Engineering.pdf",
     highlights: [
@@ -77,7 +77,7 @@ export const hiringTracks: HiringTrack[] = [
       {
         title: "Backend & Infrastructure",
         items: [
-          "Supabase (Postgres, RLS), Vercel, Stripe API, Resend, REST APIs, Webhooks",
+          "Supabase (Postgres, RLS), Cloudflare Workers (D1, Queues, R2), Vercel, Stripe API, Resend, REST APIs, Webhooks, MCP",
         ],
       },
       {
@@ -92,6 +92,16 @@ export const hiringTracks: HiringTrack[] = [
       },
     ],
     projects: [
+      {
+        name: "Checkerd",
+        role: "Founder & Solo Developer",
+        timeframe: "2026 – Present",
+        bullets: [
+          "Built and launched an NFC tap-to-check-in SaaS for clubs and campus orgs (no app to install), live at checkerd.com with student organizations at FIU: Next.js 16 on Cloudflare Workers with D1, Queues, and R2.",
+          "Made check-ins race-safe with atomic SQL and unique indexes so simultaneous taps can't double count; mirrored every check-in to Google Sheets through a queue with backoff retries, a dead-letter queue, and cron re-queueing.",
+          "Shipped Stripe subscription billing, a versioned REST API with webhooks, Apple/Google Wallet member cards, Claude-powered attendance insights, and a remote MCP server with OAuth sign-in.",
+        ],
+      },
       {
         name: "CyberSimply",
         role: "Founder & Solo Developer",
@@ -140,7 +150,7 @@ export const hiringTracks: HiringTrack[] = [
       "CyberPatriot Platinum Linux Team Lead, RLS/auth by design, studying Security+ (SY0-701).",
     seeking: "Summer 2027 Security Engineering internship",
     summary:
-      "Cybersecurity undergraduate at FIU Honors College (Minor: Artificial Intelligence), Platinum-tier CyberPatriot Linux Team Lead, with five production applications shipped end-to-end — including two live on the Apple App Store. Approaches software with security built in from the first design decision, not bolted on afterward.",
+      "Cybersecurity undergraduate at FIU Honors College (Minor: Artificial Intelligence), Platinum-tier CyberPatriot Linux Team Lead, with six production applications shipped end-to-end — including two live on the Apple App Store and a multi-tenant SaaS (Checkerd). Approaches software with security built in from the first design decision, not bolted on afterward.",
     resumeHref: "/resume/matthew-vella-resume-security-engineering.pdf",
     resumeDownloadAs: "Matthew_Vella_Resume_Security_Engineering.pdf",
     highlights: [
@@ -153,7 +163,7 @@ export const hiringTracks: HiringTrack[] = [
       {
         title: "Security & Systems",
         items: [
-          "Linux hardening (Ubuntu, Kali, Mint), Wireshark, Cisco Packet Tracer, OAuth / token-based auth, Row-Level Security (RLS) policy design, Tailscale",
+          "Linux hardening (Ubuntu, Kali, Mint), Wireshark, Cisco Packet Tracer, OAuth / token-based auth, TOTP 2FA, Content Security Policy, Row-Level Security (RLS) policy design, Tailscale",
         ],
       },
       {
@@ -167,7 +177,7 @@ export const hiringTracks: HiringTrack[] = [
       {
         title: "Backend & Infrastructure",
         items: [
-          "Supabase (Postgres, RLS), Vercel, Stripe API, Resend, REST APIs, Webhooks",
+          "Supabase (Postgres, RLS), Cloudflare Workers (D1, Queues, R2), Vercel, Stripe API, Resend, REST APIs, Webhooks, MCP",
         ],
       },
       {
@@ -176,6 +186,16 @@ export const hiringTracks: HiringTrack[] = [
       },
     ],
     projects: [
+      {
+        name: "Checkerd",
+        role: "Founder & Solo Developer",
+        timeframe: "2026 – Present",
+        bullets: [
+          "Built and launched a multi-tenant NFC attendance SaaS for clubs and campus orgs, live at checkerd.com with student organizations at FIU, on Cloudflare Workers (D1, Queues, R2).",
+          "Designed the auth and data-protection model: invite-only officer accounts with PBKDF2 password hashing and optional TOTP 2FA (secrets encrypted at rest), device tokens stored only as SHA-256 hashes, per-request CSP nonces, and rate limits on taps, sign-ins, and lookups.",
+          "Exposed a versioned REST API, webhooks, and an OAuth-protected remote MCP server behind staff approval; enforced check-in rules with atomic SQL and unique indexes so concurrent taps can't double count.",
+        ],
+      },
       {
         name: "CyberSimply",
         role: "Founder & Solo Developer",

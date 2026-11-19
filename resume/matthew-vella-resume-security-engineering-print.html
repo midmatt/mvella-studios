@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>matthew-vella-resume-security-engineering-print.html</title><style>
+@page { size: letter; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: Times, "Times New Roman", serif; font-size: 9.5px; line-height: 1.05; color: #111; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 8.5in; padding: 58px 58px 40px; }
+header { text-align: center; }
+h1 { margin: 0; font-size: 16px; font-weight: bold; color: #1f2a44; letter-spacing: .02em; }
+.contact { margin-top: 3px; font-size: 8.5px; color: #444; }
+h2 { margin: 10px 0 3px; font-size: 9.5px; font-weight: bold; color: #1f2a44; text-transform: uppercase; }
+p { margin: 0; }
+.entry { margin-top: 4px; }
+.entry + .entry { margin-top: 8px; }
+.edu + .edu { margin-top: 3px; }
+.title { font-size: 10px; font-weight: bold; }
+.when { font-style: italic; color: #444; }
+.proj .when { margin-left: 12px; }
+.sub { font-style: italic; color: #444; margin-top: 2px; }
+ul { margin: 4px 0 0; padding-left: 18px; }
+li { margin: 0 0 1px; }
+.skills p { margin: 0 0 1px; }
+</style></head>
+<body><div class="page">
+<header><h1>MATTHEW VELLA</h1><div class="contact">Miami, FL &nbsp;|&nbsp; Matthew@mvella.com &nbsp;|&nbsp; linkedin.com/in/matthew-vella-234189326 &nbsp;|&nbsp; github.com/midmatt</div></header>
+<h2>Summary</h2><p>Cybersecurity undergraduate at FIU Honors College (Minor: Artificial Intelligence), Platinum-tier CyberPatriot Linux Team Lead, with six production applications shipped end-to-end — including two live on the Apple App Store and a multi-tenant SaaS (Checkerd). Approaches software with security built in from the first design decision, not bolted on afterward. Seeking a Summer 2027 Security Engineering internship.</p>
+
+<h2>Education</h2>
+<div class="entry edu"><span class="title">Florida International University — Honors College</span><span class="when"> In Progress</span>
+<p class="sub">B.S. Cybersecurity, Minor in Artificial Intelligence &nbsp;|&nbsp; GPA: 3.76 &nbsp;|&nbsp; Relevant Coursework: Discrete Mathematics (Graph Theory, Combinatorics, Predicate Logic), Java Programming</p></div>
+<div class="entry edu"><span class="title">McFatter Technical College</span><span class="when"> Graduated</span>
+<p class="sub">CTE Degree in Applied Cybersecurity</p></div>
+
+<h2>Security &amp; Cyber Defense</h2><ul><li>CyberPatriot National Youth Cyber Defense Competition — Platinum Tier, Linux Team Lead: hardened Ubuntu, Kali, and Mint systems against live-fire red-team scoring.</li><li>Studying for CompTIA Security+ (SY0-701) — Target Exam: December 2026</li><li>Hands-on practice via TryHackMe, applying network security, Linux administration, and threat-detection fundamentals</li><li>Silver Knight Award Nominee — Vocational-Technical Category, Miami Herald</li></ul><h2>Technical Skills</h2><div class='skills'><p><b>Security &amp; Systems:</b> Linux hardening (Ubuntu, Kali, Mint), Wireshark, Cisco Packet Tracer, OAuth / token-based auth, TOTP 2FA, Content Security Policy, Row-Level Security (RLS) policy design, Tailscale</p><p><b>Languages:</b> TypeScript, JavaScript, Java, Swift, Rust</p><p><b>Frameworks &amp; Runtime:</b> Next.js, React Native / Expo, Node.js, Tauri 2.0</p><p><b>Backend &amp; Infrastructure:</b> Supabase (Postgres, RLS), Cloudflare Workers (D1, Queues, R2), Vercel, Stripe API, Resend, REST APIs, Webhooks, MCP</p><p><b>Tools:</b> Xcode, App Store Connect, Git/GitHub, Cursor, CI/CD</p></div><h2>Projects</h2><div class='entry proj'><span class='title'>Checkerd — Founder &amp; Solo Developer</span><span class='when'>2026 – Present</span><ul><li>Built and launched a multi-tenant NFC attendance SaaS for clubs and campus orgs, live at checkerd.com with student organizations at FIU, on Cloudflare Workers (D1, Queues, R2).</li><li>Designed the auth and data-protection model: invite-only officer accounts with PBKDF2 password hashing and optional TOTP 2FA (secrets encrypted at rest), device tokens stored only as SHA-256 hashes, per-request CSP nonces, and rate limits on taps, sign-ins, and lookups.</li><li>Exposed a versioned REST API, webhooks, and an OAuth-protected remote MCP server behind staff approval; enforced check-in rules with atomic SQL and unique indexes so concurrent taps can&#x27;t double count.</li></ul></div><div class='entry proj'><span class='title'>CyberSimply — Founder &amp; Solo Developer</span><span class='when'>2025 – Present</span><ul><li>Architected a security-conscious content pipeline for cybersecurity news — RSS ingestion → LLM classification → Supabase-backed deduplication → rate-limited push delivery — live on the Apple App Store.</li><li>Enforced per-user data isolation with Supabase Row-Level Security (RLS) policies and rate-limited delivery to prevent notification abuse; hardened the pipeline against silent failures with automated health checks and alerting.</li><li>Built with React Native, Expo, TypeScript, and Supabase.</li></ul></div><div class='entry proj'><span class='title'>AlarmQR — Founder &amp; Solo Developer</span><span class='when'>2025 – Present</span><ul><li>Designed a tamper-resistant, anti-spoof dismissal control: a physical QR scan gated by a unique per-install token, preventing accidental or fraudulent alarm dismissal — built on a native Swift bridge (VisionKit) and AlarmKit.</li><li>Shipped a re-engagement notification system (streak-risk, milestone, and win-back alerts); App Store analytics show 204% download growth and 15.8% install-to-scan conversion following launch.</li><li>Built with React Native, Expo, Swift, and Supabase.</li></ul></div><div class='entry proj'><span class='title'>VoiceLocal — Founder &amp; Solo Developer</span><span class='when'>2026</span><ul><li>Built a privacy-first macOS dictation app with zero cloud processing of audio or text — all transcription and injection handled on-device via a Tauri 2.0 + Rust backend and a native Swift sidecar.</li><li>Secured the companion Chrome extension with token-based WebSocket/HTTP authentication and designed a hallucination-detection guard (content-novelty checks + sentiment filtering) to suppress false transcriptions in real time.</li></ul></div><div class='entry proj'><span class='title'>MVella Studios — Founder, Freelance Web Development</span><span class='when'>2025 – Present</span><ul><li>Design and ship production Next.js/TypeScript web applications for small-business clients, owning full-stack architecture, authentication, and secure payment integration end-to-end.</li><li>Delivered e-commerce platforms (Holy Beliefs, OOT Tastings) with Stripe-driven checkout — no raw card data ever touches client infrastructure — and Supabase RLS policies enforcing per-tenant data isolation.</li><li>Own client-facing infrastructure: custom domain email (Cloudflare + Resend SMTP) and recurring security/SEO audits.</li></ul></div>
+
+<h2>Experience</h2>
+<div class="entry"><span class="title">Freelance PC Builder &amp; IT Support / AI Automation Consultant</span><span class="when">&nbsp; Ongoing</span>
+<ul>
+<li>Build custom PCs end-to-end (component selection, assembly, OS install, performance tuning) and provide ongoing remote/hands-on IT support for clients.</li>
+<li>Teach clients to build and run AI automations and agentic coding workflows for their own business use cases.</li>
+</ul></div>
+
+</div></body></html>

@@ -143,6 +143,32 @@ export default function ProjectAbout({
           ) : null}
         </div>
 
+        {project.desktopImages && project.desktopImages.length > 0 ? (
+          <ul className="flex flex-col gap-10">
+            {project.desktopImages.map((shot) => (
+              <li key={shot.src}>
+                <figure>
+                  <DeviceFrame
+                    variant="browser"
+                    domain={shot.domain ?? domainOf(liveUrl)}
+                  >
+                    <Image
+                      src={shot.src}
+                      alt={`${project.name}: ${shot.caption}`}
+                      fill
+                      sizes="(min-width: 1200px) 1104px, calc(100vw - 48px)"
+                      className="object-cover"
+                    />
+                  </DeviceFrame>
+                  <figcaption className="mono-label mt-3 text-paper/50">
+                    {shot.caption}
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
         <p className="border-t border-steel/40 pt-10">
           <Link
             href="/work"

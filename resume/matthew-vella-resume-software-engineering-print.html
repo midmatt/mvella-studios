@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>matthew-vella-resume-software-engineering-print.html</title><style>
+@page { size: letter; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: Times, "Times New Roman", serif; font-size: 9.5px; line-height: 1.05; color: #111; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 8.5in; padding: 58px 58px 40px; }
+header { text-align: center; }
+h1 { margin: 0; font-size: 16px; font-weight: bold; color: #1f2a44; letter-spacing: .02em; }
+.contact { margin-top: 3px; font-size: 8.5px; color: #444; }
+h2 { margin: 10px 0 3px; font-size: 9.5px; font-weight: bold; color: #1f2a44; text-transform: uppercase; }
+p { margin: 0; }
+.entry { margin-top: 4px; }
+.entry + .entry { margin-top: 8px; }
+.edu + .edu { margin-top: 3px; }
+.title { font-size: 10px; font-weight: bold; }
+.when { font-style: italic; color: #444; }
+.proj .when { margin-left: 12px; }
+.sub { font-style: italic; color: #444; margin-top: 2px; }
+ul { margin: 4px 0 0; padding-left: 18px; }
+li { margin: 0 0 1px; }
+.skills p { margin: 0 0 1px; }
+</style></head>
+<body><div class="page">
+<header><h1>MATTHEW VELLA</h1><div class="contact">Miami, FL &nbsp;|&nbsp; Matthew@mvella.com &nbsp;|&nbsp; linkedin.com/in/matthew-vella-234189326 &nbsp;|&nbsp; github.com/midmatt</div></header>
+<h2>Summary</h2><p>Cybersecurity undergraduate at FIU Honors College (Minor: Artificial Intelligence) with two applications shipped and maintained on the Apple App Store, a live NFC attendance SaaS (Checkerd), and a freelance web development practice serving paying clients end-to-end. Builds security-first, production-grade software — from architecture and backend design through deployment and monitoring. Seeking a Summer 2027 Software Engineering internship.</p>
+
+<h2>Education</h2>
+<div class="entry edu"><span class="title">Florida International University — Honors College</span><span class="when"> In Progress</span>
+<p class="sub">B.S. Cybersecurity, Minor in Artificial Intelligence &nbsp;|&nbsp; GPA: 3.76 &nbsp;|&nbsp; Relevant Coursework: Discrete Mathematics (Graph Theory, Combinatorics, Predicate Logic), Java Programming</p></div>
+<div class="entry edu"><span class="title">McFatter Technical College</span><span class="when"> Graduated</span>
+<p class="sub">CTE Degree in Applied Cybersecurity</p></div>
+
+<h2>Certifications &amp; Honors</h2><ul><li>Studying for CompTIA Security+ (SY0-701) — Target Exam: December 2026</li><li>CyberPatriot National Youth Cyber Defense Competition — Platinum Tier, Linux Team Lead (Ubuntu, Kali, Mint hardening &amp; defense)</li><li>Silver Knight Award Nominee — Vocational-Technical Category, Miami Herald</li></ul><h2>Technical Skills</h2><div class='skills'><p><b>Languages:</b> TypeScript, JavaScript, Java, Swift, Rust</p><p><b>Frameworks &amp; Runtime:</b> Next.js, React Native / Expo, Node.js, Tauri 2.0</p><p><b>Backend &amp; Infrastructure:</b> Supabase (Postgres, RLS), Cloudflare Workers (D1, Queues, R2), Vercel, Stripe API, Resend, REST APIs, Webhooks, MCP</p><p><b>Security &amp; Systems:</b> Linux hardening (Ubuntu, Kali, Mint), Wireshark, Cisco Packet Tracer, OAuth / token-based auth, Tailscale</p><p><b>Tools:</b> Xcode, App Store Connect, Git/GitHub, Cursor, CI/CD</p></div><h2>Projects</h2><div class='entry proj'><span class='title'>Checkerd — Founder &amp; Solo Developer</span><span class='when'>2026 – Present</span><ul><li>Built and launched an NFC tap-to-check-in SaaS for clubs and campus orgs (no app to install), live at checkerd.com with student organizations at FIU: Next.js 16 on Cloudflare Workers with D1, Queues, and R2.</li><li>Made check-ins race-safe with atomic SQL and unique indexes so simultaneous taps can&#x27;t double count; mirrored every check-in to Google Sheets through a queue with backoff retries, a dead-letter queue, and cron re-queueing.</li><li>Shipped Stripe subscription billing, a versioned REST API with webhooks, Apple/Google Wallet member cards, Claude-powered attendance insights, and a remote MCP server with OAuth sign-in.</li></ul></div><div class='entry proj'><span class='title'>CyberSimply — Founder &amp; Solo Developer</span><span class='when'>2025 – Present</span><ul><li>Architected and shipped an automated breaking-news pipeline for cybersecurity news — RSS ingestion → LLM classification (Claude) → Supabase-backed deduplication → rate-limited push delivery — live on the Apple App Store.</li><li>Led a full UI redesign (card-based feed, trending carousel, category browsing) and hardened the production pipeline with provider-migration fixes, failure alerting, and automated health checks.</li><li>Built with React Native, Expo, TypeScript, and Supabase.</li></ul></div><div class='entry proj'><span class='title'>AlarmQR — Founder &amp; Solo Developer</span><span class='when'>2025 – Present</span><ul><li>Built a tamper-resistant alarm app requiring a physical QR scan to dismiss, using a native Swift bridge (VisionKit) for scanning and AlarmKit for scheduling.</li><li>Shipped a re-engagement notification system (streak-risk, milestone, and win-back alerts) and a post-scan review-prompt flow; App Store analytics show 204% download growth and 15.8% install-to-scan conversion following launch.</li><li>Built with React Native, Expo, Swift, and Supabase.</li></ul></div><div class='entry proj'><span class='title'>VoiceLocal — Founder &amp; Solo Developer</span><span class='when'>2026</span><ul><li>Built a fully on-device macOS dictation app (zero cloud processing of audio or text) with a Tauri 2.0 + Rust backend and a native Swift sidecar for system-wide text injection.</li><li>Designed a hallucination-detection guard combining content-novelty checks and sentiment filtering to suppress false transcriptions in real time; shipped with a companion Chrome extension and Stripe-based licensing.</li></ul></div><div class='entry proj'><span class='title'>MVella Studios — Founder, Freelance Web Development</span><span class='when'>2025 – Present</span><ul><li>Design and ship production Next.js/TypeScript web applications for small-business clients, owning full-stack architecture, payments, and deployment.</li><li>Delivered e-commerce platforms including a streetwear storefront (Holy Beliefs) and a reservations platform for a tasting room (OOT Tastings), both with Stripe-driven checkout and transactional email via Resend.</li><li>Manage client-facing infrastructure: custom domain email (Cloudflare + Resend SMTP), Google Ads search campaigns with conversion tracking, and recurring SEO/performance audits.</li></ul></div>
+
+<h2>Experience</h2>
+<div class="entry"><span class="title">Freelance PC Builder &amp; IT Support / AI Automation Consultant</span><span class="when">&nbsp; Ongoing</span>
+<ul>
+<li>Build custom PCs end-to-end (component selection, assembly, OS install, performance tuning) and provide ongoing remote/hands-on IT support for clients.</li>
+<li>Teach clients to build and run AI automations and agentic coding workflows for their own business use cases.</li>
+</ul></div>
+
+</div></body></html>

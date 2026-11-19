@@ -3,7 +3,7 @@
  * To add a new project: append one object to this array — the homepage feed,
  * stats counters, and /work/[slug] all read from here.
  *
- * Order is display order: the three products first, then client work.
+ * Order is display order: products first, then client work.
  */
 export type ProjectStatus = "live" | "shipped" | "in_development";
 
@@ -32,6 +32,12 @@ export interface Project {
    * featured-card / OG thumbnail.
    */
   previewImages?: string[];
+  /**
+   * Landscape (2400×1244) screenshots for the /work/[slug] page, shown in
+   * browser chrome under the phone gallery. For products with a desktop side
+   * as well as a phone side, like Checkerd's officer dashboard.
+   */
+  desktopImages?: { src: string; caption: string; domain?: string }[];
   liveUrl?: string;
   /**
    * Optional marketing / product site shown alongside an App Store (or other)
@@ -137,6 +143,61 @@ export function projectCtas(project: Project): ProjectCta[] {
 }
 
 export const projects: Project[] = [
+  {
+    slug: "checkerd",
+    name: "Checkerd",
+    tagline: "Tap in, checked. NFC attendance for clubs, chapters, and campus orgs.",
+    about:
+      "Checkerd replaces the sign-in sheet. An organization sticks an NFC tag by the door; members tap their phone and they're checked in, with no app to install and no QR code to scan. The first tap registers them, and after that every check-in is one tap. Each tag knows which event is live at its location, place check-ins count once a day, and simultaneous taps can't double count because the rules are enforced by single atomic SQL statements and a unique index. Officers get a dashboard with live event controls, member search, streaks, and week-to-year analytics with an AI summary. Every check-in is also mirrored to the org's existing Google Form and Sheet through a retrying queue, and members can add an Apple or Google Wallet card. Under the hood it's a SaaS with Stripe billing, a versioned REST API with webhooks, and a remote MCP server so officers can run their org from Claude. Security is built in: officer sign-in with PBKDF2 and optional TOTP 2FA, hashed device tokens, per-request CSP nonces, and rate limits on taps, sign-ins, and lookups. It runs on Cloudflare Workers (D1, Queues, R2) with the marketing site on Vercel, and it's live with student organizations at FIU.",
+    role: "Founder & solo developer",
+    stack: [
+      "Next.js 16",
+      "TypeScript",
+      "Cloudflare Workers",
+      "D1",
+      "Queues",
+      "R2",
+      "Stripe",
+      "Claude API",
+      "MCP",
+    ],
+    status: "live",
+    year: 2026,
+    // Landscape homepage shot for the featured card and OG image; the phone
+    // gallery below is the member check-in flow from checkerd.com/demo.
+    heroImage: "/work/checkerd/hero.jpg",
+    previewImages: [
+      "/work/checkerd/01-choose.jpg",
+      "/work/checkerd/02-register.jpg",
+      "/work/checkerd/03-success.jpg",
+      "/work/checkerd/04-picker.jpg",
+      "/work/checkerd/05-already.jpg",
+    ],
+    desktopImages: [
+      {
+        src: "/work/checkerd/dashboard-overview.jpg",
+        caption:
+          "Officer dashboard: Google Sheet sync status and what each tag checks people in to right now.",
+        domain: "checkerd.com/admin",
+      },
+      {
+        src: "/work/checkerd/dashboard-analytics.jpg",
+        caption:
+          "Analytics by week, month, semester or year, with an AI read of the trend.",
+        domain: "checkerd.com/admin",
+      },
+      {
+        src: "/work/checkerd/dashboard-events.jpg",
+        caption:
+          "Events with Auto / On / Off check-in, live counts, and a feed of recent taps.",
+        domain: "checkerd.com/admin",
+      },
+    ],
+    liveUrl: "https://checkerd.com",
+    featured: true,
+    category: "product",
+    relatedServiceSlug: "web-development",
+  },
   {
     slug: "cybersimply",
     name: "CyberSimply",
